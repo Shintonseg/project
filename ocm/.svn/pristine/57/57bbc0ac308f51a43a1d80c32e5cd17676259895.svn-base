@@ -1,0 +1,47 @@
+tasks:
+  #run: true
+  refresh-leadership-task: '30 0/1 * * * ?'
+  srn-article-file-importer: '0 */20 * * * ?'
+  transaction-file-exporter: '0 10/30 * * * ?'
+  transactions-cleanup-task: '0 11 0 * * ?'
+  srn-oauth-clients-importer: '30 4/15 * ? * *'
+  srn-company-importer: '0 5/20 * ? * *'
+  srn-label-orders-importer: '0 0 */4 * * ?'
+  existing-bag-latest-cleanup-task: '0 0 8 * * SUN'
+  existing-transactions-latest-cleanup-task: '0 0 8 * * SUN'
+  srn-all-existing-bags-importer: '0 0 0 * * SAT' # '0 0 16 * * ?'
+  srn-all-existing-transactions-importer: '0 0 0 * * SAT' # '0 0 16 * * ?'
+  srn-existing-bags-importer: '0 */30 * ? * *'
+  srn-existing-transactions-importer: '0 */30 * ? * *'
+  rejected-directories-cleanup-task: '0 0 0 * * ?'
+  default-client-directories-creation-task: '0 1/30 * * * ?'
+  synchronize-rejected-transactions-task: '0 */20 * ? * *'
+  synchronize-rejected-bags-task: '0 */20 * ? * *'
+  transaction-per-company-file-importer: '0 5/30 * * * ?'
+  srn-article-per-company-file-exporter: '0 0 */4 * * ?'
+  srn-charities-file-exporter: '0 0 */4 * * ?'
+  refund-article-per-company-file-importer: '0 */20 * * * ?'
+  srn-articles-pricat-per-company-file-exporter: '0 0 */4 * * ?'
+  aa-files-per-company-importer: '0 5/20 * * * ?'
+  srn-importer-rule-importer: '0 */20 * * * ?'
+  transactions-consistency-check: '0 0 3 * * ?'
+  confirmed-files-cleanup-task: '0 0 1 * * ?'
+  transaction-failed-reimporter: '0 15 0 * * ?'
+  transaction-failed-directory-importer: '0 0 */2 * * ?'
+  confirmed-files-exporter-task: '0 5/20 * * * ?'
+  rejected-transaction-exporter-task: '0 */10 * ? * *'
+  rejected-transaction-importer-task: '0 5/10 * ? * *'
+  rejected-transaction-clean-up-task: '0 */10 * ? * *'
+
+#  transaction-ftp-file-importer: '* * * * * ?'
+#  refund-article-ftp-file-importer: '* * * * * ?'
+#  srn-article-ftp-file-exporter: '* * * * * ?'
+#  srn-article-file-importer: '* * * * * ?'
+#  transaction-file-exporter: '* * * * * ?'
+#task-leader: true
+
+spring:
+  task:
+    scheduling:
+      pool:
+        size: 10

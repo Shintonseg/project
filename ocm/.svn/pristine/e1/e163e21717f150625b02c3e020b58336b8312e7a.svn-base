@@ -1,0 +1,11 @@
+spring:
+  mail:
+    #host: mail.tible.com
+    #port: 2525
+    #username: testingMail
+    #password: a1ZC53yn3xp4o1t
+    from-email: testingMail@tible.com
+    test-email: testingMail@tible.com
+    bcc-email:
+    properties:
+      mail.smtp.starttls.enable: true

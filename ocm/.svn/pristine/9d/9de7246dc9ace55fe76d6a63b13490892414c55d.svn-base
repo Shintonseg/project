@@ -1,0 +1,49 @@
+spring:
+  rabbitmq:
+    listener:
+      simple:
+        default-requeue-rejected: false
+    #host: 172.32.255.90
+    #username: rabbitmq
+    #password: Ea23jgcx3PeSsCg
+    #virtual-host: /geotest
+queue:
+  #use:
+    #rabbit: true
+  mail-reply: replyMail
+  mail-request: mail
+  dead-letter: deadLetter
+  task-reply: replyTask
+  task-request: requestTask
+  transaction-export-reply: replyTransactionExport
+  transaction-import-reply: replyTransactionImport
+  transaction-import-big-files-reply: replyTransactionBigFilesImport
+  transaction-import-rest-reply: replyTransactionImportRest
+  transaction-company-confirmed-reply: transactionCompanyConfirmedReply
+  #indesign-reply: replyIndesign
+  #indesign-request: requestIndesign
+  #image-reply: replyImage
+  #image-request: requestImageRequest
+exchange:
+  topic: rabbitmq.ocm
+routing-key:
+  mail: mail
+  task: task
+  #indesign: IndesignContent
+  #image: image
+  response-message: ResponseMessage
+  transaction-export: transactionExport
+  transaction-export-response: transactionExportResponse
+  transaction-import: transactionImport
+  transaction-import-response: transactionImportResponse
+  transaction-import-big-files: transactionImportBigFiles
+  transaction-import-big-files-response: transactionImportBigFilesResponse
+  transaction-import-rest: transactionImportRest
+  transaction-import-rest-response: transactionImportRestResponse
+  transaction-company-confirmed: transactionCompanyConfirmed
+  transaction-company-confirmed-response: transactionCompanyConfirmedResponse
+rabbitmq:
+  endpoint: http://172.32.255.90:15672/
+  adminusername: rabbitmqADMIN
+  adminpassword: Ea23jgcx3PeSsCgsdaf43rfew
+  virtual-host: /ocm

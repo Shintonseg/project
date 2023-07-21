@@ -1,0 +1,50 @@
+paths:
+  root-dir: /Mounts/srnpack/ocmRoot
+  clients-dir:
+  client-dir:
+  export-event-log: exported_eventLogs
+  export-settings: exported_settings
+  temp-dir: temp
+  explorer:
+    root: files
+  rvm-dir: RVM
+  transactions-dir: transactions
+  transactions-from-dir: from
+  transactions-backup-dir: backup
+  transactions-rejected-dir: rejected
+  transactions-failed-dir: failed
+  transactions-accepted-dir: accepted
+  transactions-confirmed-dir: confirmed
+  transactions-already-exists-dir: alreadyExists
+  transactions-in-queue-dir: inQueue
+  transactions-in-queue-rest-dir: inQueueRest
+  transactions-failed-rest-dir: failedRest
+  transactions-in-queue-big-files-dir: inQueueBigFiles
+  articles-dir: articles
+  articles-from-dir: from
+  articles-rejected-dir: rejected
+  articles-accepted-dir: accepted
+  articles-export-dir: articlesExport
+  charities-export-dir: charitiesExport
+  oauth-export-dir: oAuthClients
+  companies-export-dir: companies
+  articles-pricat-dir: articlesPricat
+  existing-bags-export-dir: existingBags
+  all-existing-bags-export-dir: allExistingBags
+  existing-transactions-export-dir: existingTransactions
+  all-existing-transactions-export-dir: allExistingTransactions
+  bags-dir: bags
+  bags-backup-dir: backup
+  bags-accepted-dir: accepted
+  bags-rejected-dir: rejected
+  bags-failed-dir: failed
+  bags-confirmed-dir: confirmed
+  bags-already-exists-dir: alreadyExists
+  bags-in-queue-dir: inQueue
+  bags-in-queue-big-files-dir: inQueueBigFiles
+  importer-rule-export-dir: importerRulesExport
+  log-dir: log
+  transaction-numbers-export-dir: transactionNumbers
+  label-orders-dir: labelOrders
+  rejected-transactions-dir: rejectedTransactions
+  rejected-transactions-to-be-removed-dir: rejectedTransactionsToBeRemoved

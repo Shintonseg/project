@@ -1,0 +1,40 @@
+{
+  "version": "0162",
+  "dateTime": "2022-11-10T17:36:01",
+  "storeId": "1111111",
+  "serialNumber": "88888881",
+  "transactionNumber": "111111100000000000116",
+  "number": "",
+  "bagType": "",
+  "articles": [
+    {
+      "articleNumber": "5000112646351",
+      "scannedWeight": 0,
+      "material": 1,
+      "refund": 1,
+      "collected": 1,
+      "manual": 0
+    },
+    {
+      "articleNumber": "5000112646115",
+      "scannedWeight": 0,
+      "material": 1,
+      "refund": 1,
+      "collected": 1,
+      "manual": 0
+    },
+    {
+      "articleNumber": "45645433",
+      "scannedWeight": 0,
+      "material": 1,
+      "refund": 1,
+      "collected": 1,
+      "manual": 0
+    }
+  ],
+  "total": 3,
+  "refundable": 3,
+  "collected": 3,
+  "manual": 0,
+  "rejected": 0
+}

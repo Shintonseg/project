@@ -1,0 +1,121 @@
+# Spring Boot configuration.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+
+spring:
+
+  application:
+     name: ocm
+  profiles:
+#    include: mongo, mysql, security, mail, directories, tasks, rabbitmq, core-security
+    group:
+      "prod": "mongo, mysql, security, mail, directories, tasks, rabbitmq, core-security"
+      "accept": "mongo, mysql, security, mail, directories, tasks, rabbitmq, core-security"
+      "test": "mongo, mysql, security, mail, directories, tasks, rabbitmq, core-security"
+      "dev": "accept, local-mysql, local-mongo, local-rabbitmq, local-mail, local-directories, local-tasks, 
+      local-security, local-redis"
+  jackson:
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+    serialization: 
+      WRITE_DATES_AS_TIMESTAMPS: false
+  servlet:
+    multipart:
+      max-file-size: 256MB
+      max-request-size: 256MB
+  jpa:
+    properties:
+      hibernate:
+        id:
+          new_generator_mappings: true
+  messages:
+    basename: i18n/messages
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  liquibase:
+    enabled: false
+server:
+  servlet:
+    session:
+      timeout: 3600
+      cookie:
+        http-only: true
+        secure: true
+logging:
+  level:
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.hibernate.stat: WARN
+    com.tible: INFO
+
+super-admin:
+  login: admin
+  password: admin
+  role-name: Admin
+
+archiving:
+  excludes: null
+
+sftp-rvm:
+  main-directory: SRN-TOMRA-TEST
+  articles-export-to-dir: IN
+  articles-import-from-dir: OUT
+  transactions-dir: TRANS
+  rejected-dir: rejected
+  bags-export-to-dir: BAGS
+
+ocm-file-owner: 'ocmuser'
+ocm-version: '015'
+ocm-daily-export-version: '012'
+
+transactions-cleanup-days: 600
+existing-bag-latest-cleanup-days: 21
+existing-transactions-latest-cleanup-days: 21
+republish-transaction-before-hours: 10
+transaction:
+  rest-handling-limit: 1000
+
+
+rvm-suppliers:
+  rvm-supplier-yml-list:
+#    -
+#      name: 'tomra'
+#      number: '001'
+#      ip: 'dropbox.tible.com' #'62.92.2.147'
+#      username: 'SRN-TOMRA-TEST' #'Tomra-SRN'
+#      password: 'EYw2G4FjZvzqK2Cc' #'os5KieRPbskI74b0'
+#      version: '011'
+#      storeId: '1'
+
+mail-to:
+  file-import-failed: testingmail@tible.com
+  file-export-failed: testingmail@tible.com
+
+tible-user:
+  username: tible
+  password: t!bl#
+  scope: tible,ocm
+
+tible-admin-user:
+  username: tible-admin
+  password: NLZ9zbs0wImd1DcXd1
+  scope: tible,ocm
+
+lamson-user:
+  username: lamsonArticle
+  password: ec5qxfBFTfnQcJWrau
+  scope: ocm
+  rvm-owner-number: '002'
+
+aldi-user:
+  username: aldiArticle
+  password: cnUXpee5Xa2adAGWL7
+  scope: ocm
+  rvm-owner-number: '003'
+
+bag:
+  range:
+    big-max-weight: 15
+
+transaction-check-delay-days: 5
+transaction-check-delay-hours: 6

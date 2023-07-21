@@ -1,0 +1,66 @@
+spring:
+  main:
+    banner-mode: "off"
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database: MYSQL
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      naming.implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+      use-new-id-generator-mappings: false # id generation defaults to table otherwise
+    properties:
+      # hibernate.connection.provider_disables_autocommit: true
+      # hibernate.connection.handling_mode: DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION
+      hibernate.enable_lazy_load_no_trans: true
+      hibernate.generate_statistics: false
+      hibernate.search:
+        lucene_version: LUCENE_CURRENT
+        default:
+          directory_provider: filesystem
+          indexBase: /Mounts/ocm/lucenedirs
+          exclusive_index_use: false
+  datasource:
+    name: hawk
+    type: com.zaxxer.hikari.HikariDataSource
+    connection-test-query: SELECT 1 FROM DUAL
+    maximum-pool-size: 30
+    minimum-idle: 2
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 30
+      #idle-timeout: 600000
+      #max-lifetime: 900000
+      #connection-timeout: 30000
+      connection-test-query: SELECT 1 FROM DUAL
+    #url: jdbc:mysql://172.32.255.50:3306,172.32.255.50:3306/geoDB?useUnicode=true&characterEncoding=utf8&useSSL=false
+    #username: tible
+    #password: 9bpU7&.UR4!#
+#database:
+#  master:
+#    datasource:
+#      url: jdbc:mysql://127.0.0.1/ocm?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false
+#      username: root
+#      password: root
+#    hikari:
+#      minimum-idle: 2
+#      maximum-pool-size: 30
+#      idle-timeout: 600000
+#      max-lifetime: 900000
+#      connection-timeout: 30000
+#      connection-test-query: SELECT 1 FROM DUAL
+#      auto-commit: false
+#  slave:
+#    datasource:
+#      url: jdbc:mysql://127.0.0.1/ocm?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false
+#      username: root
+#      password: root
+#    hikari:
+#      minimum-idle: 2
+#      maximum-pool-size: 30
+#      idle-timeout: 600000
+#      max-lifetime: 900000
+#      connection-timeout: 30000
+#      connection-test-query: SELECT 1 FROM DUAL
+#      auto-commit: false

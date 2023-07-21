@@ -1,0 +1,31 @@
+tasks:
+  publisher:
+    active: true
+    allow-handling: true
+  run: true
+  transaction-ftp-file-importer: '0 */5 * * * ?'
+  #refund-article-ftp-file-importer: '0 30 */1 * * ?'
+  #srn-article-ftp-file-exporter: '0 15 2,10 * * ?'
+  transaction-file-exporter: '0 */5 * * * ?'
+  srn-article-file-importer: '0 */10 * * * ?'
+  srn-oauth-clients-importer: '0 */10 * * * ?'
+  srn-company-importer: '0 */5 * * * ?'
+  transaction-per-company-file-importer: '0 */5 * * * ?'
+  aa-files-per-company-importer: '0 */10 * * * ?'
+  srn-importer-rule-importer: '0 */10 * * * ?'
+  synchronize-rejected-transactions-task: '0 */15 * * * ?'
+  synchronize-rejected-bags-task: '0 */15 * * * ?'
+  #srn-all-existing-bags-importer: '0 30 16 * * ?'
+  srn-label-orders-importer: '0 */10 * * * ?'
+  transaction-failed-reimporter: '0 */15 * * * ?'
+  srn-existing-bags-importer: '45 */5 * ? * *'
+  srn-existing-transactions-importer: '45 */5 * ? * *'
+  existing-bag-latest-cleanup-task: '0 */5 * * * *'
+  existing-transactions-latest-cleanup-task: '0 */5 * * * *'
+  srn-charities-file-exporter: '0 */5 * * * ?'
+
+spring:
+  task:
+    scheduling:
+      pool:
+        size: 10

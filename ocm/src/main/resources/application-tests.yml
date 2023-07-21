@@ -1,0 +1,36 @@
+spring:
+  profiles:
+    include: local-directories
+  mail:
+    host:
+    port: 0
+    username:
+    password:
+  rabbitmq:
+    listener:
+      simple:
+        default-requeue-rejected: false
+        auto-startup: true
+    host: 172.32.255.90
+    username: rabbitmq
+    password: Ea23jgcx3PeSsCg
+    virtual-host: /tests
+    api-port: 15672
+    port: 5672
+
+# Some more test values here
+security:
+  ldap:
+    domain:
+    url:
+    root-dn:
+
+tasks:
+  run: true
+server:
+  servlet:
+    application-display-name: tests
+
+queue:
+  use:
+    rabbit: true

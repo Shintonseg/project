@@ -1,0 +1,33 @@
+spring:
+#  profiles:
+#    include: local-mysql, local-mongo, local-rabbitmq, local-mail, local-directories, local-tasks, local-security, local-redis
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+server:
+  port: 8081
+  servlet:
+    session:
+      cookie:
+        http-only: false
+        secure: false
+    application-display-name: local
+    
+consul:
+  service-name: ocm
+  protocol: http
+  host: 127.0.0.1
+  port: 8500
+
+existing-bag-latest-cleanup-days: 200
+existing-transactions-latest-cleanup-days: 200
+
+archiving:
+  excludes: null
+
+management:
+  health:
+    ldap:
+      enabled: false

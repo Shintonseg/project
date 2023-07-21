@@ -1,0 +1,29 @@
+spring:
+  security:
+    basic:
+      enabled: false
+    user:
+      name: root
+      password: t!bl#
+security:
+  ldap:
+    max-pwd-age: -36288000000000
+    show-warning-in-days: 7
+    allow-ldap-pwd-change: false
+    #domain: net.tible.com
+    #url: ldap://172.32.255.34:389
+    #rootDn: OU=TibleOrganization,DC=net,DC=tible,DC=com
+  # Properties for oauth2 security
+  oauth2:
+    client-id: tible
+    client-secret: t!bl#
+    auth-host: 'ocmtest.tible.com'
+    sms-api-host: 'sms.tible.com'
+    check-token-endpoint-url: 'https://ocmtest.tible.com/oauth/check_token'
+    get-token-endpoint-url: 'https://ocmtest.tible.com/oauth/token'
+jwt:
+  signing-key: abracadabra
+
+ocm:
+  secret-key: 123secretkey1234
+  file-password: oDzrLWrdppc3kGTj7OkhRXJXwGOFZazHlg5pn

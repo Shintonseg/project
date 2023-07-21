@@ -1,0 +1,11 @@
+security:
+  oauth2:
+    client-id: tible
+    client-secret: t!bl#
+    auth-host: 'http://localhost:8081'
+    check-token-endpoint-url: 'http://localhost:8081/oauth/check_token'
+    get-token-endpoint-url: 'http://localhost:8081/oauth/token'
+  ldap:
+    domain: net.tible.com
+    url: ldap://172.32.255.34:389
+    root-dn: OU=TibleOrganization,DC=net,DC=tible,DC=com

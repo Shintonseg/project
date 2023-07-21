@@ -1,0 +1,3123 @@
+@startuml
+
+class "AAFiles" {
+  readyPath : Path
+  readyHashPath : Path
+  batchPath : Path
+  batchHashPath : Path
+  slsPath : Path
+  slsHashPath : Path
+  nlsPath : Path
+  nlsHashPath : Path
+  errorFile : Path
+}
+
+class "AAFilesBuilder" {
+  readyPath : Path
+  readyHashPath : Path
+  batchPath : Path
+  batchHashPath : Path
+  slsPath : Path
+  slsHashPath : Path
+  nlsPath : Path
+  nlsHashPath : Path
+  errorFile : Path
+  batchHashPath(Path) : AAFilesBuilder
+  batchPath(Path) : AAFilesBuilder
+  build() : AAFiles
+  errorFile(Path) : AAFilesBuilder
+  nlsHashPath(Path) : AAFilesBuilder
+  nlsPath(Path) : AAFilesBuilder
+  readyHashPath(Path) : AAFilesBuilder
+  readyPath(Path) : AAFilesBuilder
+  slsHashPath(Path) : AAFilesBuilder
+  slsPath(Path) : AAFilesBuilder
+}
+
+class "AAFilesPerCompanyImporter" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+  publisherTransactionImport : PublisherTransactionImport
+  publisherTransactionImportBigFiles : PublisherTransactionImportBigFiles
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+interface "AAFilesService" {
+  processAABackupOrFailedFiles(Company, Path, boolean)
+  processAABagFiles(Company, Path, boolean)
+  processAATransactionFiles(Company, Path, boolean)
+}
+
+class "AAFilesServiceImpl" {
+  fileImportFailedMailTo : List<String>
+  bigMaxWeight : double
+  directoryService : DirectoryService
+  mailService : BaseMailService
+  transactionService : TransactionService
+  existingBagService : ExistingBagService
+  existingTransactionService : ExistingTransactionService
+  loggerExporterService : LogExporterService<LogFileInfo>
+  labelOrderService : LabelOrderService
+  srnArticleService : SrnArticleService
+  importerRuleService : ImporterRuleService
+  companyService : CompanyService
+  rejectedTransactionService : RejectedTransactionService
+  transactionRepository : TransactionRepository
+  processAABackupOrFailedFiles(Company, Path, boolean)
+  processAABagFiles(Company, Path, boolean)
+  processAATransactionFiles(Company, Path, boolean)
+}
+
+abstract class "AbstractDirectoriesCleanupTask" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+}
+
+abstract class "AbstractExistingBagsImporter" {
+  existingBagService : ExistingBagService
+  existingBagLatestService : ExistingBagLatestService
+  objectMapper : ObjectMapper
+  conversionService : ConversionService
+}
+
+abstract class "AbstractExistingTransactionsImporter" {
+  existingTransactionService : ExistingTransactionService
+  conversionService : ConversionService
+  objectMapper : ObjectMapper
+  existingTransactionLatestService : ExistingTransactionLatestService
+}
+
+abstract class "AbstractSynchronizeRejectedTask" {
+  companyService : CompanyService
+  directoryService : DirectoryService
+  synchronizedDirectoryService : SynchronizedDirectoryService
+  objectMapper : ObjectMapper
+  rejectedTransactionService : RejectedTransactionService
+  existingTransactionService : ExistingTransactionService
+  redissonClient : RedissonClient
+}
+
+class "ApplicationStartupListenerImpl" {
+  tibleUsername : String
+  tiblePassword : String
+  tibleScope : String
+  tibleAdminUsername : String
+  tibleAdminPassword : String
+  tibleAdminScope : String
+  lamsonUsername : String
+  lamsonPassword : String
+  lamsonScope : String
+  lamsonRvmOwnerNumber : String
+  aldiUsername : String
+  aldiPassword : String
+  aldiScope : String
+  aldiRvmOwnerNumber : String
+  oauthClientService : OAuthClientService
+  onApplicationEvent(ApplicationReadyEvent)
+  onApplicationEvent(ApplicationEvent)
+}
+
+class "ArticleController" {
+  refundArticleService : RefundArticleService
+  srnArticleService : SrnArticleService
+  srnRemovedArticleService : SrnRemovedArticleService
+  oauthClientService : OAuthClientService
+  exportRemovedSrnArticles(OAuth2Authentication) : SrnArticles<?>
+  exportSrnArticles(HttpServletRequest, OAuth2Authentication) : SrnArticles<?>
+  list() : RefundArticles
+  saveRefundArticles(RefundArticles, HttpServletRequest) : OcmResponse
+}
+
+interface "ArticleService" {
+  processArticleFile(String, String, List<RefundArticle>, String, Path, boolean, String)
+}
+
+class "ArticleServiceImpl" {
+  fileImportFailedMailTo : List<String>
+  directoryService : DirectoryService
+  mailService : BaseMailService
+  importerRuleService : ImporterRuleService
+  companyRepository : CompanyRepository
+  companyService : CompanyService
+  refundArticleRepository : RefundArticleRepository
+  loggerExporterService : LogExporterService<LogFileInfo>
+  processArticleFile(String, String, List<RefundArticle>, String, Path, boolean, String)
+  updateCsvFileWithImporterRules(File, Company)
+}
+
+class "BatchBody" {
+  batchId : String
+  referenceNumber : String
+  user : String
+  batchTimeStart : String
+  numberOfRefundable : String
+  numberOfRefundableFromNoReadTable : String
+  numberOfNonRefundable : String
+  numberOfNonRefundableFromNoReadTable : String
+  eanNotReadable : String
+  unknown : String
+  portZero : String
+  numberInBatch : String
+  numberInShift : String
+  batchTimeEnd : String
+  firstBlankReservedField : String
+  batchTime : String
+  keyId : String
+  ankerAndersenILNNumber : String
+  pricatVersion : String
+  trashCodes : String
+  secondBlankReservedField : String
+  thirdBlankReservedField : String
+  fourthBlankReservedField : String
+  totalDepositAmount : String
+  reserved : String
+  importType : ImportType
+}
+
+class "BatchBodyBuilder" {
+  batchId : String
+  referenceNumber : String
+  user : String
+  batchTimeStart : String
+  numberOfRefundable : String
+  numberOfRefundableFromNoReadTable : String
+  numberOfNonRefundable : String
+  numberOfNonRefundableFromNoReadTable : String
+  eanNotReadable : String
+  unknown : String
+  portZero : String
+  numberInBatch : String
+  numberInShift : String
+  batchTimeEnd : String
+  firstBlankReservedField : String
+  batchTime : String
+  keyId : String
+  ankerAndersenILNNumber : String
+  pricatVersion : String
+  trashCodes : String
+  secondBlankReservedField : String
+  thirdBlankReservedField : String
+  fourthBlankReservedField : String
+  totalDepositAmount : String
+  reserved : String
+  importType : ImportType
+  ankerAndersenILNNumber(String) : BatchBodyBuilder
+  batchId(String) : BatchBodyBuilder
+  batchTime(String) : BatchBodyBuilder
+  batchTimeEnd(String) : BatchBodyBuilder
+  batchTimeStart(String) : BatchBodyBuilder
+  build() : BatchBody
+  eanNotReadable(String) : BatchBodyBuilder
+  firstBlankReservedField(String) : BatchBodyBuilder
+  fourthBlankReservedField(String) : BatchBodyBuilder
+  importType(ImportType) : BatchBodyBuilder
+  keyId(String) : BatchBodyBuilder
+  numberInBatch(String) : BatchBodyBuilder
+  numberInShift(String) : BatchBodyBuilder
+  numberOfNonRefundable(String) : BatchBodyBuilder
+  numberOfNonRefundableFromNoReadTable(String) : BatchBodyBuilder
+  numberOfRefundable(String) : BatchBodyBuilder
+  numberOfRefundableFromNoReadTable(String) : BatchBodyBuilder
+  portZero(String) : BatchBodyBuilder
+  pricatVersion(String) : BatchBodyBuilder
+  referenceNumber(String) : BatchBodyBuilder
+  reserved(String) : BatchBodyBuilder
+  secondBlankReservedField(String) : BatchBodyBuilder
+  thirdBlankReservedField(String) : BatchBodyBuilder
+  totalDepositAmount(String) : BatchBodyBuilder
+  trashCodes(String) : BatchBodyBuilder
+  unknown(String) : BatchBodyBuilder
+  user(String) : BatchBodyBuilder
+}
+
+class "BeanInitConfiguration"
+
+interface "Body"
+
+class "CharitiesResponse" {
+  version : String
+  dateTime : LocalDateTime
+  charities : List<CharityResponse>
+  total : Integer
+}
+
+class "CharitiesResponseBuilder" {
+  version : String
+  dateTime : LocalDateTime
+  charities : List<CharityResponse>
+  total : Integer
+  build() : CharitiesResponse
+  charities(List<CharityResponse>) : CharitiesResponseBuilder
+  dateTime(LocalDateTime) : CharitiesResponseBuilder
+  total(Integer) : CharitiesResponseBuilder
+  version(String) : CharitiesResponseBuilder
+}
+
+class "CharityController" {
+  companyService : CompanyService
+  oauthClientService : OAuthClientService
+  getAllCharities(OAuth2Authentication) : CharitiesResponse
+}
+
+class "CharityResponse" {
+  number : String
+  name : String
+}
+
+class "CharityResponseBuilder" {
+  number : String
+  name : String
+  build() : CharityResponse
+  name(String) : CharityResponseBuilder
+  number(String) : CharityResponseBuilder
+}
+
+class "ClientNotFoundException"
+
+class "CommunicationType"
+
+class "Company" {
+  id : String
+  name : String
+  number : String
+  type : String
+  version : String
+  storeId : String
+  usingIpTrunking : boolean
+  ipAddress : String
+  ipRange : String
+  communication : String
+  serialNumbers : List<String>
+  rvmOwnerNumber : String
+  localizationNumber : String
+  allowDataYoungerThanDays : Integer
+  isNotifyAboutDoubleTransactions : boolean
+}
+
+class "CompanyBuilder" {
+  id : String
+  name : String
+  number : String
+  type : String
+  version : String
+  storeId : String
+  usingIpTrunking : boolean
+  ipAddress : String
+  ipRange : String
+  communication : String
+  serialNumbers : List<String>
+  rvmOwnerNumber : String
+  localizationNumber : String
+  allowDataYoungerThanDays : Integer
+  isNotifyAboutDoubleTransactions : boolean
+  allowDataYoungerThanDays(Integer) : CompanyBuilder
+  build() : Company
+  communication(String) : CompanyBuilder
+  id(String) : CompanyBuilder
+  ipAddress(String) : CompanyBuilder
+  ipRange(String) : CompanyBuilder
+  isNotifyAboutDoubleTransactions(boolean) : CompanyBuilder
+  localizationNumber(String) : CompanyBuilder
+  name(String) : CompanyBuilder
+  number(String) : CompanyBuilder
+  rvmOwnerNumber(String) : CompanyBuilder
+  serialNumbers(List<String>) : CompanyBuilder
+  storeId(String) : CompanyBuilder
+  type(String) : CompanyBuilder
+  usingIpTrunking(boolean) : CompanyBuilder
+  version(String) : CompanyBuilder
+}
+
+class "CompanyController" {
+  companyService : CompanyService
+  conversionService : ConversionService
+  oauthClientService : OAuthClientService
+  deleteRvmSupplier(String)
+  getAllCharities(OAuth2Authentication) : CharitiesResponse
+  list() : List<CompanyDto>
+  saveRvmSupplier(CompanyDto) : CompanyDto
+}
+
+interface "CompanyConverter"
+
+class "CompanyDto" {
+  id : String
+  name : String
+  number : String
+  type : String
+  version : String
+  storeId : String
+  usingIpTrunking : boolean
+  ipAddress : String
+  ipRange : String
+  communication : String
+  serialNumbers : List<String>
+  rvmOwnerNumber : String
+  localizationNumber : String
+  allowDataYoungerThanDays : Integer
+  isNotifyAboutDoubleTransactions : boolean
+  toEntity(MongoTemplate) : Company
+}
+
+interface "CompanyRepository" {
+  existsByNumber(String) : boolean
+  existsByStoreIdAndRvmOwnerNumber(String, String) : boolean
+  existsByTypeAndNumber(String, String) : boolean
+  findAllByLocalizationNumberAndRvmOwnerNumber(String, String) : List<Company>
+  findAllByType(String) : List<Company>
+  findByNumber(String) : Company
+  findByStoreIdAndRvmOwnerNumber(String, String) : Company
+  findFirstByIpAddress(String) : Company
+}
+
+interface "CompanyService" {
+  delete(String)
+  existsByNumber(String) : boolean
+  existsByStoreIdAndRvmOwnerNumber(String, String) : boolean
+  existsByTypeAndNumber(String, String) : boolean
+  findAll() : List<Company>
+  findAllCharities() : List<Company>
+  findById(String) : Optional<Company>
+  findByLocalizationNumberAndRvmOwnerNumber(String, String) : List<Company>
+  findByNumber(String) : Company
+  findByStoreIdAndRvmOwnerNumber(String, String) : Company
+  findFirstByIpAddress(String) : Company
+  getAllCharities(String) : CharitiesResponse
+  getDataExpirationPeriodInDays(Company) : int
+  save(Company) : Company
+}
+
+class "CompanyServiceImpl" {
+  passwordEncoder : PasswordEncoder
+  companyRepository : CompanyRepository
+  refundArticleRepository : RefundArticleRepository
+  transactionRepository : TransactionRepository
+  transactionArticleRepository : TransactionArticleRepository
+  delete(String)
+  existsByNumber(String) : boolean
+  existsByStoreIdAndRvmOwnerNumber(String, String) : boolean
+  existsByTypeAndNumber(String, String) : boolean
+  findAll() : List<Company>
+  findAllCharities() : List<Company>
+  findById(String) : Optional<Company>
+  findByLocalizationNumberAndRvmOwnerNumber(String, String) : List<Company>
+  findByNumber(String) : Company
+  findByStoreIdAndRvmOwnerNumber(String, String) : Company
+  findFirstByIpAddress(String) : Company
+  getAllCharities(String) : CharitiesResponse
+  getDataExpirationPeriodInDays(Company) : int
+  save(Company) : Company
+}
+
+enum "CompanyType" {
+  CUSTOMER
+  DISTRIBUTION_CENTER
+  RVM_OWNER
+}
+
+class "ConfirmedDirectoriesCleanupTask" {
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "ConfirmedFilesExporterTask" {
+  companyService : CompanyService
+  directoryService : DirectoryService
+  publisher : PublisherTransactionCompanyConfirmed
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+enum "CsvRecordType" {
+  HDR
+  POS
+  SUM
+  title
+}
+
+class "CustomerNumbersResponse" {
+  localizationNumber : String
+  customerNumbers : List<String>
+}
+
+class "CustomerNumbersResponseBuilder" {
+  localizationNumber : String
+  customerNumbers : List<String>
+  build() : CustomerNumbersResponse
+  customerNumbers(List<String>) : CustomerNumbersResponseBuilder
+  localizationNumber(String) : CustomerNumbersResponseBuilder
+}
+
+interface "DateConverter"
+
+class "DateInFutureException" {
+  dateTime : LocalDateTime
+  dateTimeNow : LocalDateTime
+}
+
+interface "DateTimeConverter"
+
+class "DateUtils"
+
+class "DefaultClientDirectoriesConfiguration" {
+  inDirectory : String
+  outDirectory : String
+  transDirectory : String
+  rejectedDirectory : String
+  bagsDirectory : String
+  allInnerDirectories : List<String>
+  init()
+}
+
+class "DefaultClientDirectoriesCreationTask" {
+  companyService : CompanyService
+  directoryService : DirectoryService
+  clientDirectories : DefaultClientDirectoriesConfiguration
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "DeleteFileException"
+
+interface "DirectoryService"
+
+class "DirectoryServiceImpl" {
+  finder : Finder
+  authUtils : BaseAuthUtils
+  rvmDir : String
+  transactionsDir : String
+  transactionsFromDir : String
+  transactionsBackupDir : String
+  transactionsRejectedDir : String
+  transactionsFailedDir : String
+  transactionsAcceptedDir : String
+  transactionsConfirmedDir : String
+  transactionsAlreadyExistsDir : String
+  transactionsInQueueDir : String
+  transactionsInQueueRestDir : String
+  transactionsFailedRestDir : String
+  transactionsInQueueBigFilesDir : String
+  articlesDir : String
+  articlesFromDir : String
+  articlesRejectedDir : String
+  articlesAcceptedDir : String
+  articlesExportDir : String
+  charitiesExportDir : String
+  oAuthClientsExportDir : String
+  companiesExportDir : String
+  articlesPricatExportDir : String
+  existingBagsExportDir : String
+  allExistingBagsExportDir : String
+  existingTransactionsExportDir : String
+  allExistingTransactionsExportDir : String
+  bagsDir : String
+  bagsBackupDir : String
+  bagsAcceptedDir : String
+  bagsRejectedDir : String
+  bagsFailedDir : String
+  bagsConfirmedDir : String
+  bagsAlreadyExistsDir : String
+  bagsInQueueDir : String
+  bagsInQueueBigFilesDir : String
+  importerRuleExportDir : String
+  logDir : String
+  transactionNumbersExportDir : String
+  labelOrdersDir : String
+  rejectedTransactionsDir : String
+  rejectedTransactionsToBeRemovedDir : String
+}
+
+class "EnvironmentService" {
+  environment : Environment
+  matchGivenProfiles(String[]) : boolean
+}
+
+class "ExistingBag" {
+  label : Integer
+  customerNumber : String
+  rvmOwnerNumber : String
+  combinedCustomerNumberLabel : String
+  createdDate : LocalDate
+  $$_hibernate_clearDirtyAttributes()
+  $$_hibernate_getCollectionTracker() : CollectionTracker
+  $$_hibernate_getDirtyAttributes() : String[]
+  $$_hibernate_getEntityEntry() : EntityEntry
+  $$_hibernate_getEntityInstance() : Object
+  $$_hibernate_getInterceptor() : PersistentAttributeInterceptor
+  $$_hibernate_getNextManagedEntity() : ManagedEntity
+  $$_hibernate_getPreviousManagedEntity() : ManagedEntity
+  $$_hibernate_hasDirtyAttributes() : boolean
+  $$_hibernate_read_combinedCustomerNumberLabel() : String
+  $$_hibernate_read_createdDate() : LocalDate
+  $$_hibernate_read_customerNumber() : String
+  $$_hibernate_read_id() : Long
+  $$_hibernate_read_label() : Integer
+  $$_hibernate_read_rvmOwnerNumber() : String
+  $$_hibernate_setEntityEntry(EntityEntry)
+  $$_hibernate_setInterceptor(PersistentAttributeInterceptor)
+  $$_hibernate_setNextManagedEntity(ManagedEntity)
+  $$_hibernate_setPreviousManagedEntity(ManagedEntity)
+  $$_hibernate_suspendDirtyTracking(boolean)
+  $$_hibernate_trackChange(String)
+  $$_hibernate_write_combinedCustomerNumberLabel(String)
+  $$_hibernate_write_createdDate(LocalDate)
+  $$_hibernate_write_customerNumber(String)
+  $$_hibernate_write_id(Long)
+  $$_hibernate_write_label(Integer)
+  $$_hibernate_write_rvmOwnerNumber(String)
+}
+
+interface "ExistingBagConverter"
+
+class "ExistingBagDto" {
+  id : Long
+  label : Integer
+  customerNumber : String
+  rvmOwnerNumber : String
+  combinedCustomerNumberLabel : String
+  createdDate : LocalDate
+  toEntity(Finder) : ExistingBag
+}
+
+class "ExistingBagLatest" {
+  id : String
+  label : Integer
+  customerNumber : String
+  rvmOwnerNumber : String
+  combinedCustomerNumberLabel : String
+  createdDate : LocalDate
+}
+
+class "ExistingBagLatestCleanUpTask" {
+  existingBagLatestService : ExistingBagLatestService
+  deleteOlderThan : Integer
+  schedule()
+}
+
+interface "ExistingBagLatestRepository" {
+  deleteByCreatedDateLessThanEqual(LocalDate) : Integer
+  existsByCombinedCustomerNumberLabel(String) : boolean
+}
+
+interface "ExistingBagLatestService" {
+  deleteByPeriod(Integer)
+  existsByCombinedCustomerNumberLabel(String) : boolean
+  saveExistingBag(ExistingBag) : ExistingBagLatest
+}
+
+class "ExistingBagLatestServiceImpl" {
+  existingBagLatestRepository : ExistingBagLatestRepository
+  deleteByPeriod(Integer)
+  existsByCombinedCustomerNumberLabel(String) : boolean
+  saveExistingBag(ExistingBag) : ExistingBagLatest
+}
+
+interface "ExistingBagRepository" {
+  existsByCombinedCustomerNumberLabel(String) : boolean
+  findAllByRvmOwnerNumber(String) : List<ExistingBag>
+  findAllByRvmOwnerNumberAndCreatedDateIsGreaterThanEqual(String, LocalDate) : List<ExistingBag>
+  findByCombinedCustomerNumberLabel(String) : ExistingBag
+}
+
+interface "ExistingBagService" {
+  deleteAll(List<ExistingBag>)
+  existsByCombinedCustomerNumberLabel(String) : boolean
+  findAll() : List<ExistingBag>
+  findAllByRvmOwnerNumber(String) : List<ExistingBag>
+  findAllByRvmOwnerNumberAndCreatedDateIsGreaterThanEqual(String, LocalDate) : List<ExistingBag>
+  findAllLatest() : List<ExistingBagLatest>
+  findByCombinedCustomerNumberLabel(String) : ExistingBag
+  lazyCheckIsBagAlreadyExists(String) : boolean
+  save(ExistingBag) : ExistingBag
+}
+
+class "ExistingBagServiceImpl" {
+  existingBagRepository : ExistingBagRepository
+  existingBagLatestRepository : ExistingBagLatestRepository
+  deleteAll(List<ExistingBag>)
+  existsByCombinedCustomerNumberLabel(String) : boolean
+  findAll() : List<ExistingBag>
+  findAllByRvmOwnerNumber(String) : List<ExistingBag>
+  findAllByRvmOwnerNumberAndCreatedDateIsGreaterThanEqual(String, LocalDate) : List<ExistingBag>
+  findAllLatest() : List<ExistingBagLatest>
+  findByCombinedCustomerNumberLabel(String) : ExistingBag
+  lazyCheckIsBagAlreadyExists(String) : boolean
+  save(ExistingBag) : ExistingBag
+}
+
+class "ExistingTransaction" {
+  number : String
+  customerNumber : String
+  rvmOwnerNumber : String
+  transactionCombinedNumber : String
+  createdDate : LocalDate
+  combinedCustomerNumberLabel : String
+  $$_hibernate_clearDirtyAttributes()
+  $$_hibernate_getCollectionTracker() : CollectionTracker
+  $$_hibernate_getDirtyAttributes() : String[]
+  $$_hibernate_getEntityEntry() : EntityEntry
+  $$_hibernate_getEntityInstance() : Object
+  $$_hibernate_getInterceptor() : PersistentAttributeInterceptor
+  $$_hibernate_getNextManagedEntity() : ManagedEntity
+  $$_hibernate_getPreviousManagedEntity() : ManagedEntity
+  $$_hibernate_hasDirtyAttributes() : boolean
+  $$_hibernate_read_combinedCustomerNumberLabel() : String
+  $$_hibernate_read_createdDate() : LocalDate
+  $$_hibernate_read_customerNumber() : String
+  $$_hibernate_read_id() : Long
+  $$_hibernate_read_number() : String
+  $$_hibernate_read_rvmOwnerNumber() : String
+  $$_hibernate_read_transactionCombinedNumber() : String
+  $$_hibernate_setEntityEntry(EntityEntry)
+  $$_hibernate_setInterceptor(PersistentAttributeInterceptor)
+  $$_hibernate_setNextManagedEntity(ManagedEntity)
+  $$_hibernate_setPreviousManagedEntity(ManagedEntity)
+  $$_hibernate_suspendDirtyTracking(boolean)
+  $$_hibernate_trackChange(String)
+  $$_hibernate_write_combinedCustomerNumberLabel(String)
+  $$_hibernate_write_createdDate(LocalDate)
+  $$_hibernate_write_customerNumber(String)
+  $$_hibernate_write_id(Long)
+  $$_hibernate_write_number(String)
+  $$_hibernate_write_rvmOwnerNumber(String)
+  $$_hibernate_write_transactionCombinedNumber(String)
+}
+
+interface "ExistingTransactionConverter"
+
+class "ExistingTransactionDto" {
+  id : Long
+  number : String
+  customerNumber : String
+  rvmOwnerNumber : String
+  transactionCombinedNumber : String
+  createdDate : LocalDate
+  combinedCustomerNumberLabel : String
+  toEntity(Finder) : ExistingTransaction
+}
+
+class "ExistingTransactionLatest" {
+  id : String
+  number : String
+  customerNumber : String
+  rvmOwnerNumber : String
+  transactionCombinedNumber : String
+  createdDate : LocalDate
+}
+
+class "ExistingTransactionLatestCleanUpTask" {
+  existingTransactionLatestService : ExistingTransactionLatestService
+  deleteOlderThan : Integer
+  schedule()
+}
+
+interface "ExistingTransactionLatestRepository" {
+  deleteByCreatedDateLessThanEqual(LocalDate) : Integer
+  existsByNumberAndRvmOwnerNumber(String, String) : boolean
+}
+
+interface "ExistingTransactionLatestService" {
+  deleteByPeriod(Integer)
+  existsByTransactionNumberAndRvmOwnerNumber(String, String) : boolean
+  saveExistingTransaction(ExistingTransaction) : ExistingTransactionLatest
+}
+
+class "ExistingTransactionLatestServiceImpl" {
+  existingTransactionLatestRepository : ExistingTransactionLatestRepository
+  deleteByPeriod(Integer)
+  existsByTransactionNumberAndRvmOwnerNumber(String, String) : boolean
+  saveExistingTransaction(ExistingTransaction) : ExistingTransactionLatest
+}
+
+interface "ExistingTransactionRepository" {
+  existsByCombinedCustomerNumberLabel(String) : boolean
+  existsByCombinedCustomerNumberLabelAndRvmOwnerNumber(String, String) : boolean
+  existsByNumberAndRvmOwnerNumber(String, String) : boolean
+  findAllByRvmOwnerNumber(String) : List<ExistingTransaction>
+  findAllByRvmOwnerNumberAndCreatedDateIsGreaterThanEqual(String, LocalDate) : List<ExistingTransaction>
+  findByNumberAndRvmOwnerNumber(String, String) : ExistingTransaction
+}
+
+interface "ExistingTransactionService" {
+  deleteAll(List<ExistingTransaction>)
+  existsByCombinedCustomerNumberLabel(String) : boolean
+  existsByCombinedCustomerNumberLabelAndRvmOwnerNumber(String, String) : boolean
+  existsByTransactionNumberAndRvmOwnerNumber(String, String) : boolean
+  findAll() : List<ExistingTransaction>
+  findAllByRvmOwnerNumber(String) : List<ExistingTransaction>
+  findAllByRvmOwnerNumberAndCreatedDateIsGreaterThanEqual(String, LocalDate) : List<ExistingTransaction>
+  findByTransactionNumberAndRvmOwnerNumber(String, String) : ExistingTransaction
+  lazyCheckIsTransactionAlreadyExists(String, String) : boolean
+  save(ExistingTransaction) : ExistingTransaction
+}
+
+class "ExistingTransactionServiceImpl" {
+  existingTransactionRepository : ExistingTransactionRepository
+  existingTransactionLatestRepository : ExistingTransactionLatestRepository
+  deleteAll(List<ExistingTransaction>)
+  existsByCombinedCustomerNumberLabel(String) : boolean
+  existsByCombinedCustomerNumberLabelAndRvmOwnerNumber(String, String) : boolean
+  existsByTransactionNumberAndRvmOwnerNumber(String, String) : boolean
+  findAll() : List<ExistingTransaction>
+  findAllByRvmOwnerNumber(String) : List<ExistingTransaction>
+  findAllByRvmOwnerNumberAndCreatedDateIsGreaterThanEqual(String, LocalDate) : List<ExistingTransaction>
+  findByTransactionNumberAndRvmOwnerNumber(String, String) : ExistingTransaction
+  lazyCheckIsTransactionAlreadyExists(String, String) : boolean
+  save(ExistingTransaction) : ExistingTransaction
+}
+
+class "ExportedTransaction" {
+  transactionNumber : String
+  value : String
+  createdDate : LocalDate
+  $$_hibernate_clearDirtyAttributes()
+  $$_hibernate_getCollectionTracker() : CollectionTracker
+  $$_hibernate_getDirtyAttributes() : String[]
+  $$_hibernate_getEntityEntry() : EntityEntry
+  $$_hibernate_getEntityInstance() : Object
+  $$_hibernate_getInterceptor() : PersistentAttributeInterceptor
+  $$_hibernate_getNextManagedEntity() : ManagedEntity
+  $$_hibernate_getPreviousManagedEntity() : ManagedEntity
+  $$_hibernate_hasDirtyAttributes() : boolean
+  $$_hibernate_read_createdDate() : LocalDate
+  $$_hibernate_read_id() : Long
+  $$_hibernate_read_transactionNumber() : String
+  $$_hibernate_read_value() : String
+  $$_hibernate_setEntityEntry(EntityEntry)
+  $$_hibernate_setInterceptor(PersistentAttributeInterceptor)
+  $$_hibernate_setNextManagedEntity(ManagedEntity)
+  $$_hibernate_setPreviousManagedEntity(ManagedEntity)
+  $$_hibernate_suspendDirtyTracking(boolean)
+  $$_hibernate_trackChange(String)
+  $$_hibernate_write_createdDate(LocalDate)
+  $$_hibernate_write_id(Long)
+  $$_hibernate_write_transactionNumber(String)
+  $$_hibernate_write_value(String)
+}
+
+interface "ExportedTransactionRepository" {
+  findByCreatedDateLessThanEqual(LocalDate) : List<ExportedTransaction>
+  findByTransactionNumber(Long) : ExportedTransaction
+}
+
+interface "ExportedTransactionService" {
+  deleteByPeriod(int)
+  findByTransactionNumber(Long) : Transaction
+  save(Transaction)
+  saveAll(List<Transaction>)
+}
+
+class "ExportedTransactionServiceImpl" {
+  exportedTransactionRepository : ExportedTransactionRepository
+  objectMapper : ObjectMapper
+  deleteByPeriod(int)
+  findByTransactionNumber(Long) : Transaction
+  save(Transaction)
+  saveAll(List<Transaction>)
+}
+
+class "FileContent" {
+  header : H
+  body : List<B>
+  footer : FileFooter
+}
+
+class "FileFooter" {
+  total : String
+  refunded : String
+  collected : String
+  manual : String
+  rejected : String
+  importType : ImportType
+}
+
+class "FileFooterBuilder" {
+  total : String
+  refunded : String
+  collected : String
+  manual : String
+  rejected : String
+  importType : ImportType
+  build() : FileFooter
+  collected(String) : FileFooterBuilder
+  importType(ImportType) : FileFooterBuilder
+  manual(String) : FileFooterBuilder
+  refunded(String) : FileFooterBuilder
+  rejected(String) : FileFooterBuilder
+  total(String) : FileFooterBuilder
+}
+
+class "FileHeader" {
+  version : String
+  dateTime : String
+}
+
+abstract class "FileHeaderBuilder" {
+  version : String
+  dateTime : String
+  build() : C
+  dateTime(String) : B
+  version(String) : B
+}
+
+class "GlnUsageResponse" {
+  localizationNumber : String
+  usedLabels : List<LabelResponse>
+}
+
+class "GlnUsageResponseBuilder" {
+  localizationNumber : String
+  usedLabels : List<LabelResponse>
+  build() : GlnUsageResponse
+  localizationNumber(String) : GlnUsageResponseBuilder
+  usedLabels(List<LabelResponse>) : GlnUsageResponseBuilder
+}
+
+class "HLZHeader" {
+  fortRunningNumber : String
+  identifierOfMessageType : String
+  messageVersionNumber : String
+  dateOfCreation : String
+  glnFirstDistributer : String
+  glnServiceProvider : String
+  constant : String
+  importType : ImportType
+}
+
+class "HLZHeaderBuilder" {
+  fortRunningNumber : String
+  identifierOfMessageType : String
+  messageVersionNumber : String
+  dateOfCreation : String
+  glnFirstDistributer : String
+  glnServiceProvider : String
+  constant : String
+  importType : ImportType
+  build() : HLZHeader
+  constant(String) : HLZHeaderBuilder
+  dateOfCreation(String) : HLZHeaderBuilder
+  fortRunningNumber(String) : HLZHeaderBuilder
+  glnFirstDistributer(String) : HLZHeaderBuilder
+  glnServiceProvider(String) : HLZHeaderBuilder
+  identifierOfMessageType(String) : HLZHeaderBuilder
+  importType(ImportType) : HLZHeaderBuilder
+  messageVersionNumber(String) : HLZHeaderBuilder
+}
+
+class "ImportBottlesMessages" {
+  messages : List<ImportMessage>
+  collected : boolean
+  refunded : boolean
+  manual : boolean
+}
+
+class "ImportException"
+
+class "ImportHelper"
+
+class "ImportMessage" {
+  lineNumber : int
+  message : String
+}
+
+class "ImportRvmSupplierHelper"
+
+class "ImportedFileValidationHelper"
+
+class "ImporterRule" {
+  id : String
+  fromEan : String
+  toEan : String
+  articleDescription : String
+}
+
+class "ImporterRuleBuilder" {
+  id : String
+  fromEan : String
+  toEan : String
+  articleDescription : String
+  articleDescription(String) : ImporterRuleBuilder
+  build() : ImporterRule
+  fromEan(String) : ImporterRuleBuilder
+  id(String) : ImporterRuleBuilder
+  toEan(String) : ImporterRuleBuilder
+}
+
+interface "ImporterRuleConverter"
+
+class "ImporterRuleDto" {
+  id : String
+  fromEan : String
+  toEan : String
+  articleDescription : String
+  importerRuleLimitations : List<ImporterRuleLimitationsDto>
+  toEntity(MongoTemplate) : ImporterRule
+}
+
+class "ImporterRuleLimitations" {
+  id : String
+  importerRuleId : String
+  rvmOwner : String
+  rvmSerials : List<String>
+}
+
+class "ImporterRuleLimitationsBuilder" {
+  id : String
+  importerRuleId : String
+  rvmOwner : String
+  rvmSerials : List<String>
+  build() : ImporterRuleLimitations
+  id(String) : ImporterRuleLimitationsBuilder
+  importerRuleId(String) : ImporterRuleLimitationsBuilder
+  rvmOwner(String) : ImporterRuleLimitationsBuilder
+  rvmSerials(List<String>) : ImporterRuleLimitationsBuilder
+}
+
+interface "ImporterRuleLimitationsConverter"
+
+class "ImporterRuleLimitationsDto" {
+  id : String
+  rvmOwner : String
+  rvmSerials : List<String>
+  toEntity(MongoTemplate) : ImporterRuleLimitations
+}
+
+interface "ImporterRuleLimitationsRepository" {
+  findAllByImporterRuleId(String) : List<ImporterRuleLimitations>
+  findAllByRvmOwner(String) : List<ImporterRuleLimitations>
+}
+
+interface "ImporterRuleRepository" {
+  existsById(Object) : boolean
+  existsById(String) : boolean
+  findAllByIdNotIn(List<String>) : List<ImporterRule>
+  findByFromEan(String) : Optional<ImporterRule>
+}
+
+interface "ImporterRuleService" {
+  delete(String)
+  findAll() : List<ImporterRule>
+  findAllNotIn(List<ImporterRule>) : List<ImporterRule>
+  findByFromEan(String) : Optional<ImporterRule>
+  findByFromEanAndRvmOwnerAndRvmSerial(String, String, String) : ImporterRule
+  getAllByRvmOwnerAndRvmSerial(String, List<String>) : List<ImporterRule>
+  remove(List<ImporterRule>) : boolean
+  save(ImporterRule, List<ImporterRuleLimitations>) : ImporterRule
+}
+
+class "ImporterRuleServiceImpl" {
+  importerRuleRepository : ImporterRuleRepository
+  importerRuleLimitationsRepository : ImporterRuleLimitationsRepository
+  delete(String)
+  findAll() : List<ImporterRule>
+  findAllNotIn(List<ImporterRule>) : List<ImporterRule>
+  findByFromEan(String) : Optional<ImporterRule>
+  findByFromEanAndRvmOwnerAndRvmSerial(String, String, String) : ImporterRule
+  getAllByRvmOwnerAndRvmSerial(String, List<String>) : List<ImporterRule>
+  remove(List<ImporterRule>) : boolean
+  save(ImporterRule, List<ImporterRuleLimitations>) : ImporterRule
+}
+
+class "InformationLookupController" {
+  oauthClientService : OAuthClientService
+  informationLookupService : InformationLookupService
+  customerNumberLookup(String, OAuth2Authentication) : CustomerNumbersResponse
+  glnLookup(String, int, OAuth2Authentication) : GlnUsageResponse
+  labelIssued(String, OAuth2Authentication) : LabelIssuedResponse
+  labelLookup(String, OAuth2Authentication) : LabelUsageResponse
+}
+
+interface "InformationLookupService" {
+  getCustomerNumbers(String, String) : CustomerNumbersResponse
+  getGlnUsage(String, String, int) : GlnUsageResponse
+  getLabelIssued(String, String) : LabelIssuedResponse
+  getLabelUsage(String, String) : LabelUsageResponse
+}
+
+class "InformationLookupServiceImpl" {
+  companyService : CompanyService
+  labelOrderService : LabelOrderService
+  queryFactory : JPAQueryFactory
+  getCustomerNumbers(String, String) : CustomerNumbersResponse
+  getGlnUsage(String, String, int) : GlnUsageResponse
+  getLabelIssued(String, String) : LabelIssuedResponse
+  getLabelUsage(String, String) : LabelUsageResponse
+}
+
+class "LabelIssuedResponse" {
+  localizationNumber : String
+  issuedLabels : List<LabelOrderResponse>
+}
+
+class "LabelIssuedResponseBuilder" {
+  localizationNumber : String
+  issuedLabels : List<LabelOrderResponse>
+  build() : LabelIssuedResponse
+  issuedLabels(List<LabelOrderResponse>) : LabelIssuedResponseBuilder
+  localizationNumber(String) : LabelIssuedResponseBuilder
+}
+
+class "LabelOrder" {
+  id : String
+  customerNumber : String
+  customerLocalizationNumber : String
+  rvmOwnerNumber : String
+  quantity : Long
+  balance : Long
+  firstLabelNumber : Long
+  lastLabelNumber : Long
+  orderDate : LocalDateTime
+  markAllLabelsAsUsed : Boolean
+}
+
+interface "LabelOrderConverter"
+
+class "LabelOrderDto" {
+  id : String
+  customerNumber : String
+  customerLocalizationNumber : String
+  rvmOwnerNumber : String
+  quantity : Long
+  balance : Long
+  firstLabelNumber : Long
+  lastLabelNumber : Long
+  orderDate : LocalDateTime
+  markAllLabelsAsUsed : Boolean
+  toEntity(MongoTemplate) : LabelOrder
+}
+
+interface "LabelOrderRepository" {
+  existsByCustomerNumberAndFirstLabelNumberIsLessThanEqualAndLastLabelNumberGreaterThanEqualAndMarkAllLabelsAsUsedFalse(String, Long, Long) : boolean
+  existsByCustomerNumberAndRvmOwnerNumberAndFirstLabelNumber(String, String, Long) : boolean
+  existsByCustomerNumberAndRvmOwnerNumberAndFirstLabelNumberIsLessThanEqualAndLastLabelNumberGreaterThanEqualAndMarkAllLabelsAsUsedFalse(String, String, Long, Long) : boolean
+  findAllByRvmOwnerNumberAndCustomerLocalizationNumber(String, String) : List<LabelOrder>
+  findByCustomerNumberAndRvmOwnerNumberAndFirstLabelNumber(String, String, Long) : LabelOrder
+}
+
+class "LabelOrderResponse" {
+  date : LocalDate
+  firstLabel : Long
+  lastLabel : Long
+  quantity : Long
+  balance : Long
+}
+
+class "LabelOrderResponseBuilder" {
+  date : LocalDate
+  firstLabel : Long
+  lastLabel : Long
+  quantity : Long
+  balance : Long
+  balance(Long) : LabelOrderResponseBuilder
+  build() : LabelOrderResponse
+  date(LocalDate) : LabelOrderResponseBuilder
+  firstLabel(Long) : LabelOrderResponseBuilder
+  lastLabel(Long) : LabelOrderResponseBuilder
+  quantity(Long) : LabelOrderResponseBuilder
+}
+
+interface "LabelOrderService" {
+  deleteAll(List<LabelOrder>)
+  existsByCustomerNumberAndLessThanOrEqualFirstLabelNumberAndGreaterThanOrEqualLastLabelNumberAndMarkAllLabelsAsUsedFalse(String, Long) : boolean
+  existsByCustomerNumberAndRvmOwnerNumberAndFirstLabelNumber(String, String, Long) : boolean
+  existsByCustomerNumberAndRvmOwnerNumberAndLessThanOrEqualFirstLabelNumberAndGreaterThanOrEqualLastLabelNumberAndMarkAllLabelsAsUsedFalse(String, String, Long) : boolean
+  findAll() : List<LabelOrder>
+  findAllByRvmOwnerNumberAndCustomerLocalizationNumber(String, String) : List<LabelOrder>
+  findByCustomerNumberAndRvmOwnerNumberAndFirstLabelNumber(String, String, Long) : LabelOrder
+  save(LabelOrder) : LabelOrder
+}
+
+class "LabelOrderServiceImpl" {
+  labelOrderRepository : LabelOrderRepository
+  deleteAll(List<LabelOrder>)
+  existsByCustomerNumberAndLessThanOrEqualFirstLabelNumberAndGreaterThanOrEqualLastLabelNumberAndMarkAllLabelsAsUsedFalse(String, Long) : boolean
+  existsByCustomerNumberAndRvmOwnerNumberAndFirstLabelNumber(String, String, Long) : boolean
+  existsByCustomerNumberAndRvmOwnerNumberAndLessThanOrEqualFirstLabelNumberAndGreaterThanOrEqualLastLabelNumberAndMarkAllLabelsAsUsedFalse(String, String, Long) : boolean
+  findAll() : List<LabelOrder>
+  findAllByRvmOwnerNumberAndCustomerLocalizationNumber(String, String) : List<LabelOrder>
+  findByCustomerNumberAndRvmOwnerNumberAndFirstLabelNumber(String, String, Long) : LabelOrder
+  save(LabelOrder) : LabelOrder
+}
+
+class "LabelResponse" {
+  date : LocalDate
+  numbers : List<String>
+}
+
+class "LabelResponseBuilder" {
+  date : LocalDate
+  numbers : List<String>
+  build() : LabelResponse
+  date(LocalDate) : LabelResponseBuilder
+  numbers(List<String>) : LabelResponseBuilder
+}
+
+class "LabelUsageResponse" {
+  number : String
+  localizationNumber : String
+  transactionCombinedNumber : String
+}
+
+class "LabelUsageResponseBuilder" {
+  number : String
+  localizationNumber : String
+  transactionCombinedNumber : String
+  build() : LabelUsageResponse
+  localizationNumber(String) : LabelUsageResponseBuilder
+  number(String) : LabelUsageResponseBuilder
+  transactionCombinedNumber(String) : LabelUsageResponseBuilder
+}
+
+class "ListenerTransactionCompanyConfirmed" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+  receiveMessage(TransactionCompanyConfirmedPayload)
+}
+
+class "ListenerTransactionExport" {
+  fileExportFailedMailTo : List<String>
+  applicationName : String
+  directoryService : DirectoryService
+  companyService : CompanyService
+  transactionService : TransactionService
+  exportedTransactionService : ExportedTransactionService
+  mailService : BaseMailService
+  existingBagService : ExistingBagService
+  existingTransactionService : ExistingTransactionService
+  receiveMessage(String)
+}
+
+class "ListenerTransactionImport" {
+  transactionImportService : TransactionImportService
+  receiveMessage(TransactionFilePayload)
+}
+
+class "ListenerTransactionImportBigFiles" {
+  transactionImportService : TransactionImportService
+  receiveMessage(TransactionFilePayload)
+}
+
+class "ListenerTransactionImportRest" {
+  transactionService : TransactionService
+  companyService : CompanyService
+  directoryService : DirectoryService
+  objectMapper : ObjectMapper
+  receiveMessage(TransactionFilePayloadRest)
+}
+
+interface "LogExporterService" {
+  export(T)
+  exportWithContentMap(Map<String, Object>, List<OcmMessage>, String, LogFileInfo, Company, boolean, String)
+  exportWithContentMap(Path, Map<String, Object>, List<ImportMessage>, LogFileInfo, Company, boolean, String)
+  exportWithDetailMessage(String, List<String>, String, T)
+  logToFile(LogFileInfo, Map<String, Object>)
+}
+
+class "LogFileExporterServiceImpl" {
+  directoryService : DirectoryService
+  objectMapper : ObjectMapper
+  export(LogInfo)
+  export(LogFileInfo)
+  exportWithContentMap(Map<String, Object>, List<OcmMessage>, String, LogFileInfo, Company, boolean, String)
+  exportWithContentMap(Path, Map<String, Object>, List<ImportMessage>, LogFileInfo, Company, boolean, String)
+  exportWithDetailMessage(String, List<String>, String, LogFileInfo)
+  exportWithDetailMessage(String, List, String, LogInfo)
+  init()
+  logToFile(LogFileInfo, Map<String, Object>)
+}
+
+class "LogFileInfo" {
+  path : Path
+  fileName : String
+  content : Map<String, Object>
+  isNeedExport : boolean
+}
+
+class "LogFileInfoBuilder" {
+  path : Path
+  fileName : String
+  content : Map<String, Object>
+  isNeedExport : boolean
+  build() : LogFileInfo
+  content(Map<String, Object>) : LogFileInfoBuilder
+  fileName(String) : LogFileInfoBuilder
+  isNeedExport(boolean) : LogFileInfoBuilder
+  path(Path) : LogFileInfoBuilder
+}
+
+interface "LogInfo"
+
+class "LogKeyConstant"
+
+enum "MaterialTypeCode" {
+  NOT_IDENTIFIED
+  PET
+  GLASS
+  STEEL
+  ALUMINIUM
+  code
+  codeInt
+  aaCode
+  aaCodeInt
+}
+
+class "MethodSecurityConfiguration"
+
+class "MongoClientDetailsService" {
+  oauthClientRepository : OAuthClientRepository
+  loadClientByClientId(String) : ClientDetails
+}
+
+class "OAuth2AuthorizationServerConfig" {
+  signingKey : String
+  authenticationManager : AuthenticationManager
+  oauthClientService : MongoClientDetailsService
+  accessTokenConverter() : JwtAccessTokenConverter
+  configure(AuthorizationServerSecurityConfigurer)
+  configure(ClientDetailsServiceConfigurer)
+  configure(AuthorizationServerEndpointsConfigurer)
+  tokenServices() : DefaultTokenServices
+  tokenStore() : TokenStore
+}
+
+class "OAuth2ResourceServerConfig"
+
+class "OAuthClient" {
+  id : String
+  clientId : String
+  clientSecret : String
+  resourceIds : String
+  scope : String
+  authorizedGrantTypes : String
+  webServerRedirectUri : String
+  authorities : String
+  accessTokenValidity : Integer
+  refreshTokenValidity : Integer
+  additionalInformation : String
+  autoApprove : String
+  url : String
+  rvmOwnerNumber : String
+  version : String
+  type : String
+  rvmMachines : List<RvmMachine>
+}
+
+class "OAuthClientController" {
+  oauthClientService : OAuthClientService
+  conversionService : ConversionService
+  checkExistClientId(OAuthClient, String) : boolean
+  findByClientId(String) : OAuthClientDto
+  getClients(List<String>) : List<OAuthClientDto>
+  list() : List<OAuthClientDto>
+  remove(List<OAuthClient>)
+  save(OAuthClientDto) : OAuthClientDto
+  url(String) : String
+}
+
+interface "OAuthClientConverter"
+
+class "OAuthClientDto" {
+  id : String
+  clientId : String
+  clientSecret : String
+  scope : List<String>
+  resourceIds : String
+  authorizedGrantTypes : String
+  accessTokenValidity : Integer
+  refreshTokenValidity : Integer
+  rvmOwnerNumber : String
+  version : String
+  type : String
+  rvmMachines : List<RvmMachineDto>
+  toEntity(MongoTemplate) : OAuthClient
+}
+
+interface "OAuthClientRepository" {
+  countByClientId(String) : Long
+  countByClientIdAndIdNot(String, String) : Long
+  findAllByClientIdNotIn(List<String>) : List<OAuthClient>
+  findByClientId(String) : OAuthClient
+}
+
+interface "OAuthClientService" {
+  checkExistClientId(OAuthClient, String) : boolean
+  findAll() : List<OAuthClient>
+  findAllNotIn(List<OAuthClient>) : List<OAuthClient>
+  findByClientId(String) : Optional<OAuthClient>
+  getClients(List<String>) : List<OAuthClient>
+  getVersion(OAuth2Authentication) : String
+  remove(List<OAuthClient>) : boolean
+  save(OAuthClient) : OAuthClient
+}
+
+class "OAuthClientServiceImpl" {
+  oAuthClientRepository : OAuthClientRepository
+  rvmMachineRepository : RvmMachineRepository
+  passwordEncoder : PasswordEncoder
+  companyService : CompanyService
+  checkExistClientId(OAuthClient, String) : boolean
+  findAll() : List<OAuthClient>
+  findAllNotIn(List<OAuthClient>) : List<OAuthClient>
+  findByClientId(String) : Optional<OAuthClient>
+  getClients(List<String>) : List<OAuthClient>
+  getVersion(OAuth2Authentication) : String
+  remove(List<OAuthClient>) : boolean
+  save(OAuthClient) : OAuthClient
+}
+
+class "OcmApplication" {
+  mongoTemplate : MongoTemplate
+  finder : Finder
+  ocmScopeRequestIpProtectionInterceptor : OcmScopeRequestIpProtectionInterceptor
+  addFormatters(FormatterRegistry)
+  addInterceptors(InterceptorRegistry)
+  jacksonBuilder() : Jackson2ObjectMapperBuilder
+}
+
+class "OcmFileUtils"
+
+class "OcmMessage" {
+  text : String
+}
+
+class "OcmRabbitConfiguration" {
+  topicExchange : String
+  deadLetterQueue : String
+  transactionExportResponse : String
+  transactionExportReplyQueue : String
+  transactionImportResponse : String
+  transactionImportReplyQueue : String
+  transactionImportBigFilesResponse : String
+  transactionImportBigFilesReplyQueue : String
+  transactionImportRestResponse : String
+  transactionImportRestReplyQueue : String
+  transactionCompanyConfirmedResponse : String
+  transactionCompanyConfirmedReplyQueue : String
+  rabbitTemplate : RabbitTemplate
+  asyncRabbitTemplateTransactionCompanyConfirmed(ConnectionFactory, AmqpAdmin) : AsyncRabbitTemplate
+  asyncRabbitTemplateTransactionExport(ConnectionFactory, AmqpAdmin) : AsyncRabbitTemplate
+  asyncRabbitTemplateTransactionImport(ConnectionFactory, AmqpAdmin) : AsyncRabbitTemplate
+  asyncRabbitTemplateTransactionImportBigFiles(ConnectionFactory, AmqpAdmin) : AsyncRabbitTemplate
+  asyncRabbitTemplateTransactionImportRest(ConnectionFactory, AmqpAdmin) : AsyncRabbitTemplate
+  replyMessageListenerContainerTransactionCompanyConfirmed(ConnectionFactory, AmqpAdmin) : SimpleMessageListenerContainer
+  replyMessageListenerContainerTransactionExport(ConnectionFactory, AmqpAdmin) : SimpleMessageListenerContainer
+  replyMessageListenerContainerTransactionImport(ConnectionFactory, AmqpAdmin) : SimpleMessageListenerContainer
+  replyMessageListenerContainerTransactionImportBigFiles(ConnectionFactory, AmqpAdmin) : SimpleMessageListenerContainer
+  replyMessageListenerContainerTransactionImportRest(ConnectionFactory, AmqpAdmin) : SimpleMessageListenerContainer
+  transactionCompanyConfirmedReplyQueue() : Queue
+  transactionExportReplyQueue() : Queue
+  transactionImportBigFilesReplyQueue() : Queue
+  transactionImportReplyQueue() : Queue
+  transactionImportRestReplyQueue() : Queue
+}
+
+class "OcmResponse" {
+  status : OcmStatus
+  messages : List<OcmMessage>
+  addMessage(OcmMessage) : OcmResponse
+}
+
+class "OcmResponseBuilder" {
+  status : OcmStatus
+  messages : List<OcmMessage>
+  build() : OcmResponse
+  messages(List<OcmMessage>) : OcmResponseBuilder
+  status(OcmStatus) : OcmResponseBuilder
+}
+
+class "OcmScopeRequestIpProtectionInterceptor" {
+  companyService : CompanyService
+  environmentService : EnvironmentService
+  preHandle(HttpServletRequest, HttpServletResponse, Object) : boolean
+}
+
+enum "OcmStatus" {
+  ACCEPTED
+  DECLINED
+  DUPLICATE
+  FAILED
+  title
+}
+
+class "OcmTaskType"
+
+class "OcmTransactionResponse" {
+  transactionNumber : String
+}
+
+enum "OcmVersion" {
+  VERSION_12
+  VERSION_15
+  VERSION_16
+  VERSION_162
+  VERSION_17
+  VERSION_171
+  title
+  number
+}
+
+class "PublisherTransactionCompanyConfirmed" {
+  topicExchange : TopicExchange
+  asyncRabbitTemplate : AsyncRabbitTemplate
+  transactionCompanyConfirmedRoutingKey : String
+  publishToQueue(TransactionCompanyConfirmedPayload)
+}
+
+class "PublisherTransactionExport" {
+  topicExchange : TopicExchange
+  asyncRabbitTemplate : AsyncRabbitTemplate
+  transactionExportRoutingKey : String
+  publishToQueue(String)
+}
+
+class "PublisherTransactionImport" {
+  topicExchange : TopicExchange
+  asyncRabbitTemplate : AsyncRabbitTemplate
+  transactionImportRoutingKey : String
+  publishToQueue(TransactionFilePayload)
+}
+
+class "PublisherTransactionImportBigFiles" {
+  topicExchange : TopicExchange
+  asyncRabbitTemplate : AsyncRabbitTemplate
+  transactionImportBigFilesRoutingKey : String
+  publishToQueue(TransactionFilePayload)
+}
+
+class "PublisherTransactionImportRest" {
+  topicExchange : TopicExchange
+  asyncRabbitTemplate : AsyncRabbitTemplate
+  transactionImportRestRoutingKey : String
+  publishToQueue(TransactionFilePayloadRest)
+}
+
+class "QExistingBag" {
+  _super : QBaseEntity
+  combinedCustomerNumberLabel : StringPath
+  createdDate : DatePath<LocalDate>
+  customerNumber : StringPath
+  id : NumberPath<Long>
+  label : NumberPath<Integer>
+  rvmOwnerNumber : StringPath
+}
+
+class "QExistingTransaction" {
+  _super : QBaseEntity
+  combinedCustomerNumberLabel : StringPath
+  createdDate : DatePath<LocalDate>
+  customerNumber : StringPath
+  id : NumberPath<Long>
+  number : StringPath
+  rvmOwnerNumber : StringPath
+  transactionCombinedNumber : StringPath
+}
+
+class "QExportedTransaction" {
+  _super : QBaseEntity
+  createdDate : DatePath<LocalDate>
+  id : NumberPath<Long>
+  transactionNumber : StringPath
+  value : StringPath
+}
+
+class "RefreshLeadershipTask" {
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "RefundArticle" {
+  id : String
+  number : String
+  supplier : String
+  activationDate : LocalDateTime
+  weightMin : Integer
+  weightMax : Integer
+  volume : Integer
+  height : Integer
+  diameter : Integer
+  material : Integer
+  type : Integer
+  description : String
+  wildcard : Integer
+  companyId : String
+}
+
+interface "RefundArticleConverter"
+
+class "RefundArticleDto" {
+  id : String
+  number : String
+  supplier : String
+  activationDate : LocalDateTime
+  weightMin : Integer
+  weightMax : Integer
+  volume : Integer
+  height : Integer
+  diameter : Integer
+  material : Integer
+  type : Integer
+  description : String
+  wildcard : Integer
+  toEntity(MongoTemplate) : RefundArticle
+}
+
+class "RefundArticlePerCompanyFileImporter" {
+  directoryService : DirectoryService
+  articleService : ArticleService
+  companyService : CompanyService
+  refundArticleService : RefundArticleService
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+interface "RefundArticleRepository" {
+  existsByNumber(String) : boolean
+  findAllByCompanyId(String) : List<RefundArticle>
+  findByNumber(String) : Optional<RefundArticle>
+}
+
+interface "RefundArticleService" {
+  findAll() : RefundArticles
+  findAllByCompanyId(String) : List<RefundArticle>
+  saveRefundArticles(RefundArticles, String) : OcmResponse
+}
+
+class "RefundArticleServiceImpl" {
+  ocmVersion : String
+  refundArticleRepository : RefundArticleRepository
+  companyService : CompanyService
+  findAll() : RefundArticles
+  findAllByCompanyId(String) : List<RefundArticle>
+  saveRefundArticles(RefundArticles, String) : OcmResponse
+}
+
+class "RefundArticles" {
+  version : String
+  dateTime : LocalDateTime
+  articles : List<RefundArticleDto>
+  total : Integer
+  wildcard : Integer
+}
+
+class "RejectedDirectoriesCleanupTask" {
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "RejectedFilesUtils"
+
+class "RejectedTransaction" {
+  id : String
+  baseFileName : String
+  createdAt : LocalDateTime
+  type : TransactionType
+  companyNumber : String
+  isExternal : boolean
+  needToBeDeleted : boolean
+  deletedSince : LocalDateTime
+}
+
+class "RejectedTransactionBuilder" {
+  id : String
+  baseFileName : String
+  createdAt : LocalDateTime
+  type : TransactionType
+  companyNumber : String
+  isExternal : boolean
+  needToBeDeleted : boolean
+  deletedSince : LocalDateTime
+  baseFileName(String) : RejectedTransactionBuilder
+  build() : RejectedTransaction
+  companyNumber(String) : RejectedTransactionBuilder
+  createdAt(LocalDateTime) : RejectedTransactionBuilder
+  deletedSince(LocalDateTime) : RejectedTransactionBuilder
+  id(String) : RejectedTransactionBuilder
+  isExternal(boolean) : RejectedTransactionBuilder
+  needToBeDeleted(boolean) : RejectedTransactionBuilder
+  type(TransactionType) : RejectedTransactionBuilder
+}
+
+class "RejectedTransactionCleanUpTask" {
+  directoryService : DirectoryService
+  objectMapper : ObjectMapper
+  rejectedTransactionService : RejectedTransactionService
+  eventLogService : BaseEventLogService<BaseEventLog>
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+interface "RejectedTransactionConverter"
+
+class "RejectedTransactionDto" {
+  baseFileName : String
+  createdAt : LocalDateTime
+  type : TransactionType
+  companyNumber : String
+  needToBeDeleted : boolean
+  deletedSince : LocalDateTime
+  toEntity(MongoTemplate) : RejectedTransaction
+}
+
+class "RejectedTransactionDtoBuilder" {
+  baseFileName : String
+  createdAt : LocalDateTime
+  type : TransactionType
+  companyNumber : String
+  needToBeDeleted : boolean
+  deletedSince : LocalDateTime
+  baseFileName(String) : RejectedTransactionDtoBuilder
+  build() : RejectedTransactionDto
+  companyNumber(String) : RejectedTransactionDtoBuilder
+  createdAt(LocalDateTime) : RejectedTransactionDtoBuilder
+  deletedSince(LocalDateTime) : RejectedTransactionDtoBuilder
+  needToBeDeleted(boolean) : RejectedTransactionDtoBuilder
+  type(TransactionType) : RejectedTransactionDtoBuilder
+}
+
+interface "RejectedTransactionRepository" {
+  existsByCompanyNumberAndCreatedAtEqualsAndBaseFileName(String, LocalDateTime, String) : boolean
+  findAllByBaseFileNameAndType(String, TransactionType) : List<RejectedTransaction>
+  findAllByCompanyNumber(String) : List<RejectedTransaction>
+  findAllByCompanyNumberAndNeedToBeDeletedIsTrue(String) : List<RejectedTransaction>
+  findByCompanyNumberAndCreatedAtEqualsAndBaseFileName(String, LocalDateTime, String) : RejectedTransaction
+}
+
+interface "RejectedTransactionService" {
+  deleteAll(List<RejectedTransaction>)
+  existsByCompanyNumberAndCreatedAtAndBaseFileName(String, LocalDateTime, String) : boolean
+  findAllByBaseFileNameAndType(String, TransactionType) : List<RejectedTransaction>
+  findAllByCompanyNumber(String) : List<RejectedTransaction>
+  findAllNeedToBeDeletedByCompanyNumber(String) : List<RejectedTransaction>
+  findByCompanyNumberAndCreatedAtAndBaseFileName(String, LocalDateTime, String) : RejectedTransaction
+  save(RejectedTransaction) : RejectedTransaction
+}
+
+class "RejectedTransactionServiceImpl" {
+  rejectedTransactionRepository : RejectedTransactionRepository
+  deleteAll(List<RejectedTransaction>)
+  existsByCompanyNumberAndCreatedAtAndBaseFileName(String, LocalDateTime, String) : boolean
+  findAllByBaseFileNameAndType(String, TransactionType) : List<RejectedTransaction>
+  findAllByCompanyNumber(String) : List<RejectedTransaction>
+  findAllNeedToBeDeletedByCompanyNumber(String) : List<RejectedTransaction>
+  findByCompanyNumberAndCreatedAtAndBaseFileName(String, LocalDateTime, String) : RejectedTransaction
+  save(RejectedTransaction) : RejectedTransaction
+}
+
+class "ReportContent" {
+  fileName : String
+  header : HLZHeader
+  body : List<T>
+}
+
+class "RvmController" {
+  rvmMachineService : RvmMachineService
+  rvmSupplierService : RvmSupplierService
+  conversionService : ConversionService
+  ListMachines() : List<RvmMachineDto>
+  deleteRvmMachine(String)
+  deleteRvmSupplier(String)
+  list() : List<RvmSupplierDto>
+  saveRvmMachine(RvmSupplier, RvmMachineDto) : RvmMachineDto
+  saveRvmSupplier(RvmSupplierDto) : RvmSupplierDto
+}
+
+class "RvmMachine" {
+  id : String
+  serialNumber : String
+  storeId : String
+  ipAddress : String
+  version : String
+}
+
+interface "RvmMachineConverter"
+
+class "RvmMachineDto" {
+  id : String
+  serialNumber : String
+  storeId : String
+  ipAddress : String
+  version : String
+  toEntity(MongoTemplate) : RvmMachine
+}
+
+interface "RvmMachineRepository" {
+  existsBySerialNumber(String) : boolean
+  existsByStoreId(String) : boolean
+  findByStoreIdAndAndSerialNumber(String, String) : RvmMachine
+  findFirstByIpAddress(String) : RvmMachine
+}
+
+interface "RvmMachineService" {
+  delete(String)
+  findAll() : List<RvmMachine>
+  save(RvmSupplier, RvmMachine) : RvmMachine
+}
+
+class "RvmMachineServiceImpl" {
+  rvmSupplierRepository : RvmSupplierRepository
+  rvmMachineRepository : RvmMachineRepository
+  delete(String)
+  findAll() : List<RvmMachine>
+  save(RvmSupplier, RvmMachine) : RvmMachine
+}
+
+class "RvmSupplier" {
+  id : String
+  name : String
+  number : String
+  version : String
+  ftpHostname : String
+  ftpUsername : String
+  ftpPassword : String
+  ipRange : String
+  isTrunkIp : boolean
+  transactions : List<Transaction>
+  rvmMachines : List<RvmMachine>
+  refundArticles : List<RefundArticle>
+}
+
+interface "RvmSupplierConverter"
+
+class "RvmSupplierDto" {
+  id : String
+  name : String
+  number : String
+  version : String
+  ftpHostname : String
+  ftpUsername : String
+  ftpPassword : String
+  ipRange : String
+  isTrunkIp : boolean
+  transactions : List<TransactionDto>
+  rvmMachines : List<RvmMachineDto>
+  refundArticles : List<RefundArticleDto>
+  toEntity(MongoTemplate) : RvmSupplier
+}
+
+class "RvmSupplierFtpConnection" {
+  channel : ChannelSftp
+  rvmSupplierYml : RvmSupplierYml
+  cd(String) : RvmSupplierFtpConnection
+  copyToFtp(Path, String, boolean)
+  exists(String) : boolean
+  getAndRemoveFromFtp(String, String, boolean) : boolean
+  getFromFtp(String, String) : boolean
+  list(String, Consumer<LsEntry>) : RvmSupplierFtpConnection
+  removeFromFtp(String) : boolean
+}
+
+class "RvmSupplierFtpConnector" {
+  mainDirectory : String
+  sessionAliveInterval : int
+  sessionAliveCountMax : int
+  eventLogService : BaseEventLogService<BaseEventLog>
+  directoryService : DirectoryService
+  connectAndRun(RvmSupplierYml, Consumer<RvmSupplierFtpConnection>)
+}
+
+interface "RvmSupplierRepository" {
+  findByNumber(String) : RvmSupplier
+  findByRvmMachines(String) : RvmSupplier
+  findByTransactionsContains(Transaction) : RvmSupplier
+}
+
+interface "RvmSupplierService" {
+  delete(String)
+  findAll() : List<RvmSupplier>
+  findByNumber(String) : RvmSupplier
+  save(RvmSupplier) : RvmSupplier
+}
+
+class "RvmSupplierServiceImpl" {
+  passwordEncoder : PasswordEncoder
+  rvmSupplierRepository : RvmSupplierRepository
+  refundArticleRepository : RefundArticleRepository
+  transactionRepository : TransactionRepository
+  rvmMachineRepository : RvmMachineRepository
+  delete(String)
+  findAll() : List<RvmSupplier>
+  findByNumber(String) : RvmSupplier
+  save(RvmSupplier) : RvmSupplier
+}
+
+class "RvmSupplierYml" {
+  name : String
+  number : String
+  ip : String
+  username : String
+  password : String
+  version : String
+  storeId : String
+}
+
+class "RvmSuppliersConfiguration" {
+  rvmSupplierYmlList : List<RvmSupplierYml>
+}
+
+interface "RvmTransactionService" {
+  backupTransactionFile(String, String, Path)
+  processTransactionBackupOrFailedFiles(Company, Path, boolean)
+  processTransactionFile(Company, Path, boolean, boolean)
+}
+
+class "RvmTransactionServiceImpl" {
+  fileImportFailedMailTo : List<String>
+  transactionRepository : TransactionRepository
+  directoryService : DirectoryService
+  transactionService : TransactionService
+  srnArticleService : SrnArticleService
+  existingTransactionService : ExistingTransactionService
+  existingBagService : ExistingBagService
+  labelOrderService : LabelOrderService
+  companyService : CompanyService
+  loggerExporterService : LogExporterService<LogFileInfo>
+  importerRuleService : ImporterRuleService
+  rejectedTransactionService : RejectedTransactionService
+  backupTransactionFile(String, String, Path)
+  processTransactionBackupOrFailedFiles(Company, Path, boolean)
+  processTransactionFile(Company, Path, boolean, boolean)
+}
+
+class "SecurityConfigurationImpl" {
+  allowUrlEncodedSlashHttpFirewall() : HttpFirewall
+  authenticationManagerBean() : AuthenticationManager
+  configure(SecurityBuilder)
+  configure(WebSecurity)
+  ignoreCsrfRequests() : ArrayList<String>
+  permitRequests() : ArrayList<String>
+}
+
+class "SecurityUser"
+
+class "SecurityUserDetailsService" {
+  userService : BaseUserService
+  loadUserByUsername(String) : UserDetails
+}
+
+class "ServletInitializer"
+
+class "SlsNlsBody" {
+  glnManufacturer : String
+  keyId : String
+  articleNumber : String
+  dateAndTime : String
+  firstBlankReservedField : String
+  secondBlankReservedField : String
+  batchId : String
+  cameraNumber : String
+  firstZeroReservedField : String
+  secondZeroReservedField : String
+  ejectionStationNo : String
+  thirdZeroReservedField : String
+  fourthZeroReservedField : String
+  fifthZeroReservedField : String
+  thirdBlankReservedField : String
+  depositAmount : String
+  typeOfMaterial : String
+  materialTypeDetected : String
+  fourthBlankReservedField : String
+  fifthBlankReservedField : String
+  sixthBlankReservedField : String
+  importType : ImportType
+}
+
+class "SlsNlsBodyBuilder" {
+  glnManufacturer : String
+  keyId : String
+  articleNumber : String
+  dateAndTime : String
+  firstBlankReservedField : String
+  secondBlankReservedField : String
+  batchId : String
+  cameraNumber : String
+  firstZeroReservedField : String
+  secondZeroReservedField : String
+  ejectionStationNo : String
+  thirdZeroReservedField : String
+  fourthZeroReservedField : String
+  fifthZeroReservedField : String
+  thirdBlankReservedField : String
+  depositAmount : String
+  typeOfMaterial : String
+  materialTypeDetected : String
+  fourthBlankReservedField : String
+  fifthBlankReservedField : String
+  sixthBlankReservedField : String
+  importType : ImportType
+  articleNumber(String) : SlsNlsBodyBuilder
+  batchId(String) : SlsNlsBodyBuilder
+  build() : SlsNlsBody
+  cameraNumber(String) : SlsNlsBodyBuilder
+  dateAndTime(String) : SlsNlsBodyBuilder
+  depositAmount(String) : SlsNlsBodyBuilder
+  ejectionStationNo(String) : SlsNlsBodyBuilder
+  fifthBlankReservedField(String) : SlsNlsBodyBuilder
+  fifthZeroReservedField(String) : SlsNlsBodyBuilder
+  firstBlankReservedField(String) : SlsNlsBodyBuilder
+  firstZeroReservedField(String) : SlsNlsBodyBuilder
+  fourthBlankReservedField(String) : SlsNlsBodyBuilder
+  fourthZeroReservedField(String) : SlsNlsBodyBuilder
+  glnManufacturer(String) : SlsNlsBodyBuilder
+  importType(ImportType) : SlsNlsBodyBuilder
+  keyId(String) : SlsNlsBodyBuilder
+  materialTypeDetected(String) : SlsNlsBodyBuilder
+  secondBlankReservedField(String) : SlsNlsBodyBuilder
+  secondZeroReservedField(String) : SlsNlsBodyBuilder
+  sixthBlankReservedField(String) : SlsNlsBodyBuilder
+  thirdBlankReservedField(String) : SlsNlsBodyBuilder
+  thirdZeroReservedField(String) : SlsNlsBodyBuilder
+  typeOfMaterial(String) : SlsNlsBodyBuilder
+}
+
+class "SrnAllExistingBagsImporter" {
+  directoryService : DirectoryService
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnAllExistingTransactionsImporter" {
+  directoryService : DirectoryService
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnArticle" {
+  id : String
+  number : String
+  supplier : String
+  activationDate : LocalDateTime
+  weight : Integer
+  volume : Integer
+  height : Integer
+  diameter : Integer
+  material : Integer
+  depositValue : Integer
+  shapeIdentifier : String
+  description : String
+  depositCode : Integer
+  createdDateTime : LocalDateTime
+  editedDateTime : LocalDateTime
+  firstArticleActivationDate : LocalDateTime
+  color : String
+}
+
+interface "SrnArticleConverter"
+
+class "SrnArticleDto" {
+  id : String
+  number : String
+  supplier : String
+  activationDate : String
+  weight : Integer
+  volume : Integer
+  height : Integer
+  diameter : Integer
+  material : Integer
+  depositValue : Integer
+  description : String
+  toEntity(MongoTemplate) : SrnArticle
+}
+
+class "SrnArticleDtoVersion016" {
+  shapeIdentifier : String
+  depositCode : Integer
+  firstArticleActivationDate : String
+  color : String
+  toEntity(MongoTemplate) : SrnArticle
+}
+
+class "SrnArticleDtoVersion017" {
+  toEntity(MongoTemplate) : SrnArticle
+}
+
+class "SrnArticleFileImporter" {
+  directoryService : DirectoryService
+  srnArticleService : SrnArticleService
+  srnRemovedArticleService : SrnRemovedArticleService
+  loggerExporterService : LogExporterService<LogFileInfo>
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnArticlePerCompanyFileExporter" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+  articleService : SrnArticleService
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+interface "SrnArticleRepository" {
+  existsByNumber(String) : boolean
+  findAllByMaterialIn(Collection<Integer>) : List<SrnArticle>
+  findByNumber(String) : SrnArticle
+}
+
+interface "SrnArticleService" {
+  deleteAll(List<SrnArticle>)
+  deleteSrnArticle(String)
+  existsAndIsActiveByArticleNumberAndRefundable(String, Integer) : boolean
+  existsByArticleNumber(String) : boolean
+  findAll(String) : SrnArticles<SrnArticleDto>
+  findAllArticles() : List<SrnArticle>
+  findAllVersion016(String) : SrnArticles<SrnArticleDtoVersion016>
+  findAllVersion017(String) : SrnArticles<SrnArticleDtoVersion017>
+  findByArticleNumber(String) : SrnArticle
+  getAllMaterialIn(List<Integer>) : List<SrnArticle>
+  saveSrnArticles(List<SrnArticle>) : OcmResponse
+}
+
+class "SrnArticleServiceImpl" {
+  ocmVersion : String
+  srnArticleRepository : SrnArticleRepository
+  deleteAll(List<SrnArticle>)
+  deleteSrnArticle(String)
+  existsAndIsActiveByArticleNumberAndRefundable(String, Integer) : boolean
+  existsByArticleNumber(String) : boolean
+  findAll(String) : SrnArticles<SrnArticleDto>
+  findAllArticles() : List<SrnArticle>
+  findAllVersion016(String) : SrnArticles<SrnArticleDtoVersion016>
+  findAllVersion017(String) : SrnArticles<SrnArticleDtoVersion017>
+  findByArticleNumber(String) : SrnArticle
+  getAllMaterialIn(List<Integer>) : List<SrnArticle>
+  saveSrnArticles(List<SrnArticle>) : OcmResponse
+}
+
+class "SrnArticles" {
+  version : String
+  dateTime : LocalDateTime
+  articles : List<A>
+  total : Integer
+}
+
+class "SrnArticlesPricatPerCompanyFileExporter" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+  loggerExporterService : LogExporterService<LogFileInfo>
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnCharitiesFileExporter" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnCompanyImporter" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+  conversionService : ConversionService
+  objectMapper : ObjectMapper
+  loggerExporterService : LogExporterService<LogFileInfo>
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnExistingBagsImporter" {
+  directoryService : DirectoryService
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnExistingTransactionsImporter" {
+  directoryService : DirectoryService
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnImporterRuleImporter" {
+  directoryService : DirectoryService
+  conversionService : ConversionService
+  importerRuleService : ImporterRuleService
+  objectMapper : ObjectMapper
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnLabelOrdersImporter" {
+  directoryService : DirectoryService
+  conversionService : ConversionService
+  objectMapper : ObjectMapper
+  labelOrderService : LabelOrderService
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnOAuthClientImporter" {
+  directoryService : DirectoryService
+  oauthClientService : OAuthClientService
+  loggerExporterService : LogExporterService<LogFileInfo>
+  conversionService : ConversionService
+  zipFileHelper : ZipFileHelper
+  objectMapper : ObjectMapper
+  key : String
+  tibleUsername : String
+  tibleAdminUsername : String
+  lamsonUsername : String
+  aldiUsername : String
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnRejectedTransactionExporterTask" {
+  companyService : CompanyService
+  rejectedTransactionService : RejectedTransactionService
+  directoryService : DirectoryService
+  objectMapper : ObjectMapper
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnRejectedTransactionImporterTask" {
+  directoryService : DirectoryService
+  rejectedTransactionService : RejectedTransactionService
+  conversionService : ConversionService
+  objectMapper : ObjectMapper
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SrnRemovedArticle" {
+  id : String
+  number : String
+  deactivationDate : LocalDateTime
+  createdDateTime : LocalDateTime
+}
+
+class "SrnRemovedArticleBuilder" {
+  id : String
+  number : String
+  deactivationDate : LocalDateTime
+  createdDateTime : LocalDateTime
+  build() : SrnRemovedArticle
+  createdDateTime(LocalDateTime) : SrnRemovedArticleBuilder
+  deactivationDate(LocalDateTime) : SrnRemovedArticleBuilder
+  id(String) : SrnRemovedArticleBuilder
+  number(String) : SrnRemovedArticleBuilder
+}
+
+class "SrnRemovedArticleDto" {
+  number : String
+  deactivationDate : String
+}
+
+interface "SrnRemovedArticleRepository" {
+  findByNumber(String) : SrnRemovedArticle
+}
+
+interface "SrnRemovedArticleService" {
+  deleteAll(List<SrnRemovedArticle>)
+  findAll(String) : SrnArticles<SrnRemovedArticleDto>
+  findAll() : List<SrnRemovedArticle>
+  saveSrnRemovedArticles(List<SrnRemovedArticle>) : OcmResponse
+}
+
+class "SrnRemovedArticleServiceImpl" {
+  srnRemovedArticleRepository : SrnRemovedArticleRepository
+  deleteAll(List<SrnRemovedArticle>)
+  findAll(String) : SrnArticles<SrnRemovedArticleDto>
+  findAll() : List<SrnRemovedArticle>
+  saveSrnRemovedArticles(List<SrnRemovedArticle>) : OcmResponse
+}
+
+class "SynchronizeRejectedBagsTask" {
+  existingBagService : ExistingBagService
+  directoryService : DirectoryService
+  companyService : CompanyService
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SynchronizeRejectedTransactionsTask" {
+  directoryService : DirectoryService
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "SynchronizedDirectory" {
+  id : String
+  name : String
+  dateTime : LocalDateTime
+}
+
+interface "SynchronizedDirectoryRepository" {
+  existsByName(String) : boolean
+  findByName(String) : SynchronizedDirectory
+}
+
+interface "SynchronizedDirectoryService" {
+  existsByName(String) : boolean
+  findByName(String) : SynchronizedDirectory
+  save(SynchronizedDirectory) : SynchronizedDirectory
+}
+
+class "SynchronizedDirectoryServiceImpl" {
+  synchronizedDirectoryRepository : SynchronizedDirectoryRepository
+  existsByName(String) : boolean
+  findByName(String) : SynchronizedDirectory
+  save(SynchronizedDirectory) : SynchronizedDirectory
+}
+
+class "TaskController" {
+  taskService : TaskService
+  conversionService : ConversionService
+  isStarted(String) : boolean
+  list() : List<BaseTaskDetail>
+  remove(Long)
+  runTask(String)
+  stop(Long)
+  taskType() : List<String>
+}
+
+interface "TaskService" {
+  listFiltered() : List<BaseTask>
+}
+
+class "TaskServiceImpl" {
+  queryFactory : JPAQueryFactory
+  getTaskParameters(Long) : List<BaseTaskParameter>
+  list(DefaultPagination) : Page<BaseTask>
+  listFiltered() : List<BaseTask>
+}
+
+class "Transaction" {
+  id : String
+  version : String
+  dateTime : LocalDateTime
+  storeId : String
+  serialNumber : String
+  transactionNumber : String
+  total : Integer
+  refundable : Integer
+  collected : Integer
+  manual : Integer
+  rejected : Integer
+  receivedDate : LocalDateTime
+  labelNumber : String
+  bagType : String
+  charityNumber : String
+  type : String
+  inQueue : Boolean
+  inQueueDateTime : LocalDateTime
+  failed : Boolean
+  companyId : String
+}
+
+class "TransactionArticle" {
+  id : String
+  articleNumber : String
+  scannedWeight : Integer
+  material : Integer
+  refund : Integer
+  collected : Integer
+  manual : Integer
+  transactionId : String
+}
+
+interface "TransactionArticleConverter"
+
+class "TransactionArticleDto" {
+  id : String
+  articleNumber : String
+  scannedWeight : Integer
+  material : Integer
+  refund : Integer
+  collected : Integer
+  manual : Integer
+  toEntity(MongoTemplate) : TransactionArticle
+}
+
+interface "TransactionArticleRepository" {
+  countAllByTransactionId(String) : int
+  countAllByTransactionIdAndCollected(String, Integer) : int
+  countAllByTransactionIdAndRefund(String, Integer) : int
+  findAllByTransactionId(String) : List<TransactionArticle>
+}
+
+class "TransactionBody" {
+  articleNumber : String
+  scannedWeight : String
+  material : String
+  refunded : String
+  collected : String
+  manual : String
+  importType : ImportType
+}
+
+class "TransactionBodyBuilder" {
+  articleNumber : String
+  scannedWeight : String
+  material : String
+  refunded : String
+  collected : String
+  manual : String
+  importType : ImportType
+  articleNumber(String) : TransactionBodyBuilder
+  build() : TransactionBody
+  collected(String) : TransactionBodyBuilder
+  importType(ImportType) : TransactionBodyBuilder
+  manual(String) : TransactionBodyBuilder
+  material(String) : TransactionBodyBuilder
+  refunded(String) : TransactionBodyBuilder
+  scannedWeight(String) : TransactionBodyBuilder
+}
+
+class "TransactionBuilder" {
+  id : String
+  version : String
+  dateTime : LocalDateTime
+  storeId : String
+  serialNumber : String
+  transactionNumber : String
+  total : Integer
+  refundable : Integer
+  collected : Integer
+  manual : Integer
+  rejected : Integer
+  receivedDate : LocalDateTime
+  labelNumber : String
+  bagType : String
+  charityNumber : String
+  type : String
+  inQueue : Boolean
+  inQueueDateTime : LocalDateTime
+  failed : Boolean
+  companyId : String
+  bagType(String) : TransactionBuilder
+  build() : Transaction
+  charityNumber(String) : TransactionBuilder
+  collected(Integer) : TransactionBuilder
+  companyId(String) : TransactionBuilder
+  dateTime(LocalDateTime) : TransactionBuilder
+  failed(Boolean) : TransactionBuilder
+  id(String) : TransactionBuilder
+  inQueue(Boolean) : TransactionBuilder
+  inQueueDateTime(LocalDateTime) : TransactionBuilder
+  labelNumber(String) : TransactionBuilder
+  manual(Integer) : TransactionBuilder
+  receivedDate(LocalDateTime) : TransactionBuilder
+  refundable(Integer) : TransactionBuilder
+  rejected(Integer) : TransactionBuilder
+  serialNumber(String) : TransactionBuilder
+  storeId(String) : TransactionBuilder
+  total(Integer) : TransactionBuilder
+  transactionNumber(String) : TransactionBuilder
+  type(String) : TransactionBuilder
+  version(String) : TransactionBuilder
+}
+
+class "TransactionCompanyConfirmedPayload" {
+  companyId : String
+}
+
+class "TransactionController" {
+  transactionService : TransactionService
+  findAll() : List<Transaction>
+  findByTransactionNumber(String) : List<Transaction>
+  findTransactionArticlesByTransactionId(String) : List<TransactionArticle>
+  saveTransaction(TransactionDto, HttpServletRequest) : OcmTransactionResponse
+}
+
+interface "TransactionConverter"
+
+class "TransactionDto" {
+  id : String
+  version : String
+  dateTime : LocalDateTime
+  storeId : String
+  serialNumber : String
+  transactionNumber : String
+  total : Integer
+  refundable : Integer
+  collected : Integer
+  manual : Integer
+  rejected : Integer
+  receivedDate : LocalDateTime
+  number : String
+  bagType : String
+  articles : List<TransactionArticleDto>
+  charityNumber : String
+  toEntity(MongoTemplate) : Transaction
+}
+
+class "TransactionFailedDirectoryImporter" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+  transactionService : TransactionService
+  aaFilesService : AAFilesService
+  rvmTransactionService : RvmTransactionService
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "TransactionFailedReimporter" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+  transactionService : TransactionService
+  aaFilesService : AAFilesService
+  rvmTransactionService : RvmTransactionService
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "TransactionFilePayload" {
+  name : String
+  companyId : String
+  type : String
+}
+
+class "TransactionFilePayloadRest" {
+  name : String
+  companyId : String
+  type : String
+}
+
+class "TransactionHeader" {
+  storeId : String
+  rvmSerial : String
+  labelNumber : String
+  bagType : String
+  charityNumber : String
+  importType : ImportType
+}
+
+abstract class "TransactionHeaderBuilder" {
+  storeId : String
+  rvmSerial : String
+  labelNumber : String
+  bagType : String
+  charityNumber : String
+  importType : ImportType
+  bagType(String) : B
+  build() : C
+  build() : FileHeader
+  charityNumber(String) : B
+  importType(ImportType) : B
+  labelNumber(String) : B
+  rvmSerial(String) : B
+  storeId(String) : B
+}
+
+class "TransactionImportService" {
+  directoryService : DirectoryService
+  rvmTransactionService : RvmTransactionService
+  companyService : CompanyService
+  aaFilesService : AAFilesService
+  handleTransactionFilePayload(TransactionFilePayload, boolean)
+}
+
+class "TransactionPerCompanyFileImporter" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+  publisherTransactionImport : PublisherTransactionImport
+  publisherTransactionImportBigFiles : PublisherTransactionImportBigFiles
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+interface "TransactionRepository" {
+  existsByDateTimeAndStoreIdAndSerialNumber(LocalDateTime, String, String) : boolean
+  existsByLabelNumber(String) : boolean
+  existsByTransactionNumber(String) : boolean
+  findAllByCompanyId(String) : List<Transaction>
+  findAllByDateTimeGreaterThanEqualAndReceivedDateLessThanEqual(LocalDateTime, LocalDateTime) : List<Transaction>
+  findByTransactionNumber(String) : List<Transaction>
+}
+
+interface "TransactionService" {
+  countAllByTransactionId(String) : int
+  countAllByTransactionIdAndCollected(String, Integer) : int
+  countAllByTransactionIdAndRefund(String, Integer) : int
+  delete(Transaction)
+  deleteAll(List<Transaction>)
+  findAll() : List<Transaction>
+  findAllByCompanyId(String) : List<Transaction>
+  findAllByTransactionId(String) : List<TransactionArticle>
+  findById(String) : Optional<Transaction>
+  findByTransactionNumber(String) : List<Transaction>
+  handleTransaction(TransactionDto, String) : OcmTransactionResponse
+  moveTransactionRestToQueue(TransactionDto, Company)
+  save(Transaction) : Transaction
+  saveAll(List<Transaction>) : List<Transaction>
+  saveTransaction(TransactionDto, Company) : Transaction
+  saveTransactionAndArticlesByCompany(Transaction, List<TransactionArticle>, Company) : Transaction
+  saveTransactionArticles(List<TransactionArticle>) : List<TransactionArticle>
+}
+
+class "TransactionServiceImpl" {
+  transactionRepository : TransactionRepository
+  transactionArticleRepository : TransactionArticleRepository
+  srnArticleService : SrnArticleService
+  companyService : CompanyService
+  conversionService : ConversionService
+  existingTransactionService : ExistingTransactionService
+  importerRuleService : ImporterRuleService
+  directoryService : DirectoryService
+  loggerExporterService : LogExporterService<LogFileInfo>
+  existingBagService : ExistingBagService
+  labelOrderService : LabelOrderService
+  environmentService : EnvironmentService
+  objectMapper : ObjectMapper
+  publisherTransactionImportRest : PublisherTransactionImportRest
+  labelOrderRepository : LabelOrderRepository
+  existingBagLatestRepository : ExistingBagLatestRepository
+  existingTransactionLatestRepository : ExistingTransactionLatestRepository
+  importerRuleRepository : ImporterRuleRepository
+  restTransactionsHandlingLimit : Integer
+  countAllByTransactionId(String) : int
+  countAllByTransactionIdAndCollected(String, Integer) : int
+  countAllByTransactionIdAndRefund(String, Integer) : int
+  delete(Transaction)
+  deleteAll(List<Transaction>)
+  findAll() : List<Transaction>
+  findAllByCompanyId(String) : List<Transaction>
+  findAllByTransactionId(String) : List<TransactionArticle>
+  findById(String) : Optional<Transaction>
+  findByTransactionNumber(String) : List<Transaction>
+  handleTransaction(TransactionDto, String) : OcmTransactionResponse
+  init()
+  moveTransactionRestToQueue(TransactionDto, Company)
+  save(Transaction) : Transaction
+  saveAll(List<Transaction>) : List<Transaction>
+  saveTransaction(TransactionDto, Company) : Transaction
+  saveTransactionAndArticlesByCompany(Transaction, List<TransactionArticle>, Company) : Transaction
+  saveTransactionArticles(List<TransactionArticle>) : List<TransactionArticle>
+}
+
+class "TransactionToFileExporter" {
+  directoryService : DirectoryService
+  companyService : CompanyService
+  transactionService : TransactionService
+  publisherTransactionExport : PublisherTransactionExport
+  eventLogService : BaseEventLogService
+  republishTransactionBeforeHours : Integer
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+enum "TransactionType" {
+  BAG
+  TRANSACTION
+}
+
+class "TransactionsCleanupTask" {
+  exportedTransactionService : ExportedTransactionService
+  transactionsCleanupDays : Integer
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "TransactionsConsistencyCheck" {
+  directoryService : DirectoryService
+  transactionRepository : TransactionRepository
+  objectMapper : ObjectMapper
+  dayOffset : int
+  hoursOffset : int
+  init()
+  receiveMessage(TaskMessage)
+  schedule()
+}
+
+class "ValidationUtils"
+
+class "WrongVersionNumberException" {
+  number : String
+  expectedNumber : String
+}
+
+"AAFilesBuilder" --> "AAFiles" : use
+"AAFilesPerCompanyImporter" --> "CompanyService" : companyService
+"AAFilesPerCompanyImporter" --> "DirectoryService" : directoryService
+"AAFilesPerCompanyImporter" --> "PublisherTransactionImport" : publisherTransactionImport
+"AAFilesPerCompanyImporter" --> "PublisherTransactionImportBigFiles" : publisherTransactionImportBigFiles
+"AAFilesService" <|-- "AAFilesServiceImpl"
+"AAFilesService" --> "Company" : use as company
+"AAFilesServiceImpl" --> "Company" : use as company
+"AAFilesServiceImpl" --> "CompanyService" : companyService
+"AAFilesServiceImpl" --> "DirectoryService" : directoryService
+"AAFilesServiceImpl" --> "ExistingBagService" : existingBagService
+"AAFilesServiceImpl" --> "ExistingTransactionService" : existingTransactionService
+"AAFilesServiceImpl" --> "ImporterRuleService" : importerRuleService
+"AAFilesServiceImpl" --> "LabelOrderService" : labelOrderService
+"AAFilesServiceImpl" --> "LogExporterService" : loggerExporterService
+"AAFilesServiceImpl" --> "LogFileInfo" : loggerExporterService
+"AAFilesServiceImpl" --> "RejectedTransactionService" : rejectedTransactionService
+"AAFilesServiceImpl" --> "SrnArticleService" : srnArticleService
+"AAFilesServiceImpl" --> "TransactionRepository" : transactionRepository
+"AAFilesServiceImpl" --> "TransactionService" : transactionService
+"AbstractDirectoriesCleanupTask" --> "CompanyService" : companyService
+"AbstractDirectoriesCleanupTask" <|-- "ConfirmedDirectoriesCleanupTask"
+"AbstractDirectoriesCleanupTask" --> "DirectoryService" : directoryService
+"AbstractDirectoriesCleanupTask" <|-- "RejectedDirectoriesCleanupTask"
+"AbstractExistingBagsImporter" --> "ExistingBagLatestService" : existingBagLatestService
+"AbstractExistingBagsImporter" --> "ExistingBagService" : existingBagService
+"AbstractExistingBagsImporter" <|-- "SrnAllExistingBagsImporter"
+"AbstractExistingBagsImporter" <|-- "SrnExistingBagsImporter"
+"AbstractExistingTransactionsImporter" --> "ExistingTransactionLatestService" : existingTransactionLatestService
+"AbstractExistingTransactionsImporter" --> "ExistingTransactionService" : existingTransactionService
+"AbstractExistingTransactionsImporter" <|-- "SrnAllExistingTransactionsImporter"
+"AbstractExistingTransactionsImporter" <|-- "SrnExistingTransactionsImporter"
+"AbstractSynchronizeRejectedTask" --> "CompanyService" : companyService
+"AbstractSynchronizeRejectedTask" --> "DirectoryService" : directoryService
+"AbstractSynchronizeRejectedTask" --> "ExistingTransactionService" : existingTransactionService
+"AbstractSynchronizeRejectedTask" --> "RejectedTransactionService" : rejectedTransactionService
+"AbstractSynchronizeRejectedTask" <|-- "SynchronizeRejectedBagsTask"
+"AbstractSynchronizeRejectedTask" <|-- "SynchronizeRejectedTransactionsTask"
+"AbstractSynchronizeRejectedTask" --> "SynchronizedDirectoryService" : synchronizedDirectoryService
+"ApplicationStartupListenerImpl" --> "OAuthClientService" : oauthClientService
+"ArticleController" --> "OAuthClientService" : oauthClientService
+"ArticleController" --> "OcmResponse" : use
+"ArticleController" --> "RefundArticleService" : refundArticleService
+"ArticleController" --> "RefundArticles" : use
+"ArticleController" --> "SrnArticleService" : srnArticleService
+"ArticleController" --> "SrnArticles" : use
+"ArticleController" --> "SrnRemovedArticleService" : srnRemovedArticleService
+"ArticleService" <|-- "ArticleServiceImpl"
+"ArticleServiceImpl" --> "Company" : use as company
+"ArticleServiceImpl" --> "CompanyRepository" : companyRepository
+"ArticleServiceImpl" --> "CompanyService" : companyService
+"ArticleServiceImpl" --> "DirectoryService" : directoryService
+"ArticleServiceImpl" --> "ImporterRuleService" : importerRuleService
+"ArticleServiceImpl" --> "LogExporterService" : loggerExporterService
+"ArticleServiceImpl" --> "LogFileInfo" : loggerExporterService
+"ArticleServiceImpl" --> "*" "RefundArticle" : use as refundArticles
+"ArticleServiceImpl" --> "RefundArticleRepository" : refundArticleRepository
+"ArticleService" --> "*" "RefundArticle" : use as refundArticles
+"BatchBodyBuilder" --> "BatchBody" : use
+"Body" <|-- "BatchBody"
+"CharitiesResponseBuilder" --> "CharitiesResponse" : use
+"CharitiesResponseBuilder" --> "*" "CharityResponse" : charities
+"CharitiesResponse" --> "*" "CharityResponse" : charities
+"CharityController" --> "CharitiesResponse" : use
+"CharityController" --> "CompanyService" : companyService
+"CharityController" --> "OAuthClientService" : oauthClientService
+"CharityResponseBuilder" --> "CharityResponse" : use
+"CompanyBuilder" --> "Company" : use
+"CompanyController" --> "CharitiesResponse" : use
+"CompanyController" --> "*" "CompanyDto" : use
+"CompanyController" --> "CompanyService" : companyService
+"CompanyController" --> "OAuthClientService" : oauthClientService
+"CompanyDto" --> "Company" : use
+"CompanyRepository" --> "*" "Company" : use
+"CompanyService" --> "CharitiesResponse" : use
+"CompanyService" --> "*" "Company" : use
+"CompanyService" <|-- "CompanyServiceImpl"
+"CompanyServiceImpl" --> "CharitiesResponse" : use
+"CompanyServiceImpl" --> "*" "Company" : use
+"CompanyServiceImpl" --> "CompanyRepository" : companyRepository
+"CompanyServiceImpl" --> "RefundArticleRepository" : refundArticleRepository
+"CompanyServiceImpl" --> "TransactionArticleRepository" : transactionArticleRepository
+"CompanyServiceImpl" --> "TransactionRepository" : transactionRepository
+"ConfirmedFilesExporterTask" --> "CompanyService" : companyService
+"ConfirmedFilesExporterTask" --> "DirectoryService" : directoryService
+"ConfirmedFilesExporterTask" --> "PublisherTransactionCompanyConfirmed" : publisher
+"CustomerNumbersResponseBuilder" --> "CustomerNumbersResponse" : use
+"DefaultClientDirectoriesCreationTask" --> "CompanyService" : companyService
+"DefaultClientDirectoriesCreationTask" --> "DefaultClientDirectoriesConfiguration" : clientDirectories
+"DefaultClientDirectoriesCreationTask" --> "DirectoryService" : directoryService
+"DirectoryService" <|-- "DirectoryServiceImpl"
+"ExistingBagDto" --> "ExistingBag" : use
+"ExistingBagLatestCleanUpTask" --> "ExistingBagLatestService" : existingBagLatestService
+"ExistingBagLatestService" --> "ExistingBag" : use as existingBag
+"ExistingBagLatestService" --> "ExistingBagLatest" : use
+"ExistingBagLatestService" <|-- "ExistingBagLatestServiceImpl"
+"ExistingBagLatestServiceImpl" --> "ExistingBag" : use as existingBag
+"ExistingBagLatestServiceImpl" --> "ExistingBagLatest" : use
+"ExistingBagLatestServiceImpl" --> "ExistingBagLatestRepository" : existingBagLatestRepository
+"ExistingBagRepository" --> "*" "ExistingBag" : use
+"ExistingBagService" --> "*" "ExistingBag" : use as existingBags
+"ExistingBagService" --> "*" "ExistingBagLatest" : use
+"ExistingBagService" <|-- "ExistingBagServiceImpl"
+"ExistingBagServiceImpl" --> "*" "ExistingBag" : use as existingTransactions
+"ExistingBagServiceImpl" --> "*" "ExistingBagLatest" : use
+"ExistingBagServiceImpl" --> "ExistingBagLatestRepository" : existingBagLatestRepository
+"ExistingBagServiceImpl" --> "ExistingBagRepository" : existingBagRepository
+"ExistingTransactionDto" --> "ExistingTransaction" : use
+"ExistingTransactionLatestCleanUpTask" --> "ExistingTransactionLatestService" : existingTransactionLatestService
+"ExistingTransactionLatestService" --> "ExistingTransaction" : use as existingTransaction
+"ExistingTransactionLatestService" --> "ExistingTransactionLatest" : use
+"ExistingTransactionLatestService" <|-- "ExistingTransactionLatestServiceImpl"
+"ExistingTransactionLatestServiceImpl" --> "ExistingTransaction" : use as existingTransaction
+"ExistingTransactionLatestServiceImpl" --> "ExistingTransactionLatest" : use
+"ExistingTransactionLatestServiceImpl" --> "ExistingTransactionLatestRepository" : existingTransactionLatestRepository
+"ExistingTransactionRepository" --> "*" "ExistingTransaction" : use
+"ExistingTransactionService" --> "*" "ExistingTransaction" : use as existingTransactions
+"ExistingTransactionService" <|-- "ExistingTransactionServiceImpl"
+"ExistingTransactionServiceImpl" --> "*" "ExistingTransaction" : use as existingTransactions
+"ExistingTransactionServiceImpl" --> "ExistingTransactionLatestRepository" : existingTransactionLatestRepository
+"ExistingTransactionServiceImpl" --> "ExistingTransactionRepository" : existingTransactionRepository
+"ExportedTransactionRepository" --> "*" "ExportedTransaction" : use
+"ExportedTransactionService" <|-- "ExportedTransactionServiceImpl"
+"ExportedTransactionServiceImpl" --> "ExportedTransactionRepository" : exportedTransactionRepository
+"ExportedTransactionServiceImpl" --> "Transaction" : use
+"ExportedTransactionService" --> "Transaction" : use
+"FileContent" --> "FileFooter" : footer
+"FileFooterBuilder" --> "FileFooter" : use
+"FileHeaderBuilder" --> "FileHeader" : use
+"FileHeaderBuilder" <|-- "TransactionHeaderBuilder"
+"FileHeader" <|-- "TransactionHeader"
+"GlnUsageResponseBuilder" --> "GlnUsageResponse" : use
+"GlnUsageResponseBuilder" --> "*" "LabelResponse" : usedLabels
+"GlnUsageResponse" --> "*" "LabelResponse" : usedLabels
+"HLZHeaderBuilder" --> "HLZHeader" : use
+"ImportBottlesMessages" --> "*" "ImportMessage" : messages
+"ImportException" <|-- "DateInFutureException"
+"ImportException" <|-- "WrongVersionNumberException"
+"ImporterRuleBuilder" --> "ImporterRule" : use
+"ImporterRuleDto" --> "ImporterRule" : use
+"ImporterRuleDto" --> "*" "ImporterRuleLimitationsDto" : importerRuleLimitations
+"ImporterRuleLimitationsBuilder" --> "ImporterRuleLimitations" : use
+"ImporterRuleLimitationsDto" --> "ImporterRuleLimitations" : use
+"ImporterRuleLimitationsRepository" --> "*" "ImporterRuleLimitations" : use
+"ImporterRuleRepository" --> "*" "ImporterRule" : use
+"ImporterRuleServiceImpl" --> "*" "ImporterRule" : use
+"ImporterRuleServiceImpl" --> "*" "ImporterRuleLimitations" : use as importerRuleLimitations
+"ImporterRuleServiceImpl" --> "ImporterRuleLimitationsRepository" : importerRuleLimitationsRepository
+"ImporterRuleServiceImpl" --> "ImporterRuleRepository" : importerRuleRepository
+"ImporterRuleService" --> "*" "ImporterRule" : use
+"ImporterRuleService" --> "*" "ImporterRuleLimitations" : use as importerRuleLimitations
+"ImporterRuleService" <|-- "ImporterRuleServiceImpl"
+"InformationLookupController" --> "CustomerNumbersResponse" : use
+"InformationLookupController" --> "GlnUsageResponse" : use
+"InformationLookupController" --> "InformationLookupService" : informationLookupService
+"InformationLookupController" --> "LabelIssuedResponse" : use
+"InformationLookupController" --> "LabelUsageResponse" : use
+"InformationLookupController" --> "OAuthClientService" : oauthClientService
+"InformationLookupService" --> "CustomerNumbersResponse" : use
+"InformationLookupService" --> "GlnUsageResponse" : use
+"InformationLookupServiceImpl" --> "CompanyService" : companyService
+"InformationLookupServiceImpl" --> "CustomerNumbersResponse" : use
+"InformationLookupServiceImpl" --> "GlnUsageResponse" : use
+"InformationLookupServiceImpl" --> "LabelIssuedResponse" : use
+"InformationLookupServiceImpl" --> "LabelOrderService" : labelOrderService
+"InformationLookupServiceImpl" --> "LabelUsageResponse" : use
+"InformationLookupService" <|-- "InformationLookupServiceImpl"
+"InformationLookupService" --> "LabelIssuedResponse" : use
+"InformationLookupService" --> "LabelUsageResponse" : use
+"LabelIssuedResponseBuilder" --> "LabelIssuedResponse" : use
+"LabelIssuedResponseBuilder" --> "*" "LabelOrderResponse" : issuedLabels
+"LabelIssuedResponse" --> "*" "LabelOrderResponse" : issuedLabels
+"LabelOrderDto" --> "LabelOrder" : use
+"LabelOrderRepository" --> "*" "LabelOrder" : use
+"LabelOrderResponseBuilder" --> "LabelOrderResponse" : use
+"LabelOrderServiceImpl" --> "*" "LabelOrder" : use as labelOrders
+"LabelOrderServiceImpl" --> "LabelOrderRepository" : labelOrderRepository
+"LabelOrderService" --> "*" "LabelOrder" : use as labelOrders
+"LabelOrderService" <|-- "LabelOrderServiceImpl"
+"LabelResponseBuilder" --> "LabelResponse" : use
+"LabelUsageResponseBuilder" --> "LabelUsageResponse" : use
+"ListenerTransactionCompanyConfirmed" --> "CompanyService" : companyService
+"ListenerTransactionCompanyConfirmed" --> "DirectoryService" : directoryService
+"ListenerTransactionCompanyConfirmed" --> "TransactionCompanyConfirmedPayload" : use as payload
+"ListenerTransactionExport" --> "CompanyService" : companyService
+"ListenerTransactionExport" --> "DirectoryService" : directoryService
+"ListenerTransactionExport" --> "ExistingBagService" : existingBagService
+"ListenerTransactionExport" --> "ExistingTransactionService" : existingTransactionService
+"ListenerTransactionExport" --> "ExportedTransactionService" : exportedTransactionService
+"ListenerTransactionExport" --> "TransactionService" : transactionService
+"ListenerTransactionImportBigFiles" --> "TransactionFilePayload" : use as payload
+"ListenerTransactionImportBigFiles" --> "TransactionImportService" : transactionImportService
+"ListenerTransactionImportRest" --> "CompanyService" : companyService
+"ListenerTransactionImportRest" --> "DirectoryService" : directoryService
+"ListenerTransactionImportRest" --> "TransactionFilePayloadRest" : use as payload
+"ListenerTransactionImportRest" --> "TransactionService" : transactionService
+"ListenerTransactionImport" --> "TransactionFilePayload" : use as payload
+"ListenerTransactionImport" --> "TransactionImportService" : transactionImportService
+"LogExporterService" --> "Company" : use as company
+"LogExporterService" --> "*" "ImportMessage" : use as importMessages
+"LogExporterService" <|-- "LogFileExporterServiceImpl"
+"LogExporterService" --> "LogFileInfo" : use as logFileInfo
+"LogExporterService" --> "LogInfo" : use as info
+"LogExporterService" --> "*" "OcmMessage" : use as messages
+"LogFileExporterServiceImpl" --> "Company" : use as company
+"LogFileExporterServiceImpl" --> "DirectoryService" : directoryService
+"LogFileExporterServiceImpl" --> "*" "ImportMessage" : use as importMessages
+"LogFileExporterServiceImpl" --> "LogFileInfo" : use as info
+"LogFileExporterServiceImpl" --> "LogInfo" : use as info
+"LogFileExporterServiceImpl" --> "*" "OcmMessage" : use as messages
+"LogFileInfoBuilder" --> "LogFileInfo" : use
+"LogInfo" <|-- "LogFileInfo"
+"MongoClientDetailsService" --> "OAuthClientRepository" : oauthClientRepository
+"OAuth2AuthorizationServerConfig" --> "MongoClientDetailsService" : oauthClientService
+"OAuthClientController" --> "OAuthClient" : use as oauthClient
+"OAuthClientController" --> "OAuthClientDto" : use
+"OAuthClientController" --> "OAuthClientService" : oauthClientService
+"OAuthClientDto" --> "OAuthClient" : use
+"OAuthClientDto" --> "*" "RvmMachineDto" : rvmMachines
+"OAuthClientRepository" --> "*" "OAuthClient" : use
+"OAuthClient" --> "*" "RvmMachine" : rvmMachines
+"OAuthClientServiceImpl" --> "CompanyService" : companyService
+"OAuthClientServiceImpl" --> "OAuthClient" : use as client
+"OAuthClientServiceImpl" --> "OAuthClientRepository" : oAuthClientRepository
+"OAuthClientServiceImpl" --> "RvmMachineRepository" : rvmMachineRepository
+"OAuthClientService" --> "OAuthClient" : use as client
+"OAuthClientService" <|-- "OAuthClientServiceImpl"
+"OcmApplication" --> "OcmScopeRequestIpProtectionInterceptor" : ocmScopeRequestIpProtectionInterceptor
+"OcmResponseBuilder" --> "*" "OcmMessage" : messages
+"OcmResponseBuilder" --> "OcmResponse" : use
+"OcmResponseBuilder" --> "OcmStatus" : status
+"OcmResponse" --> "*" "OcmMessage" : messages
+"OcmResponse" --> "OcmStatus" : status
+"OcmResponse" <|-- "OcmTransactionResponse"
+"OcmScopeRequestIpProtectionInterceptor" --> "CompanyService" : companyService
+"OcmScopeRequestIpProtectionInterceptor" --> "EnvironmentService" : environmentService
+"PublisherTransactionCompanyConfirmed" --> "TransactionCompanyConfirmedPayload" : use as transactionCompanyConfirmedPayload
+"PublisherTransactionImportBigFiles" --> "TransactionFilePayload" : use as transactionFilePayload
+"PublisherTransactionImportRest" --> "TransactionFilePayloadRest" : use as transactionFilePayload
+"PublisherTransactionImport" --> "TransactionFilePayload" : use as transactionFilePayload
+"RefundArticleDto" --> "RefundArticle" : use
+"RefundArticlePerCompanyFileImporter" --> "ArticleService" : articleService
+"RefundArticlePerCompanyFileImporter" --> "CompanyService" : companyService
+"RefundArticlePerCompanyFileImporter" --> "DirectoryService" : directoryService
+"RefundArticlePerCompanyFileImporter" --> "RefundArticleService" : refundArticleService
+"RefundArticleRepository" --> "*" "RefundArticle" : use
+"RefundArticleServiceImpl" --> "CompanyService" : companyService
+"RefundArticleServiceImpl" --> "OcmResponse" : use
+"RefundArticleServiceImpl" --> "*" "RefundArticle" : use
+"RefundArticleServiceImpl" --> "RefundArticleRepository" : refundArticleRepository
+"RefundArticleServiceImpl" --> "RefundArticles" : use
+"RefundArticleService" --> "OcmResponse" : use
+"RefundArticleService" --> "*" "RefundArticle" : use
+"RefundArticleService" <|-- "RefundArticleServiceImpl"
+"RefundArticleService" --> "RefundArticles" : use
+"RefundArticles" --> "*" "RefundArticleDto" : articles
+"RejectedTransactionBuilder" --> "RejectedTransaction" : use
+"RejectedTransactionBuilder" --> "TransactionType" : type
+"RejectedTransactionCleanUpTask" --> "DirectoryService" : directoryService
+"RejectedTransactionCleanUpTask" --> "RejectedTransactionService" : rejectedTransactionService
+"RejectedTransactionDtoBuilder" --> "RejectedTransactionDto" : use
+"RejectedTransactionDtoBuilder" --> "TransactionType" : type
+"RejectedTransactionDto" --> "RejectedTransaction" : use
+"RejectedTransactionDto" --> "TransactionType" : type
+"RejectedTransactionRepository" --> "*" "RejectedTransaction" : use
+"RejectedTransactionRepository" --> "TransactionType" : use as type
+"RejectedTransactionServiceImpl" --> "*" "RejectedTransaction" : use as rejectedTransactions
+"RejectedTransactionServiceImpl" --> "RejectedTransactionRepository" : rejectedTransactionRepository
+"RejectedTransactionServiceImpl" --> "TransactionType" : use as type
+"RejectedTransactionService" --> "*" "RejectedTransaction" : use as rejectedTransactions
+"RejectedTransactionService" <|-- "RejectedTransactionServiceImpl"
+"RejectedTransactionService" --> "TransactionType" : use as type
+"RejectedTransaction" --> "TransactionType" : type
+"ReportContent" --> "HLZHeader" : header
+"RvmController" --> "*" "RvmMachineDto" : use
+"RvmController" --> "RvmMachineService" : rvmMachineService
+"RvmController" --> "RvmSupplier" : use as rvmSupplier
+"RvmController" --> "*" "RvmSupplierDto" : use
+"RvmController" --> "RvmSupplierService" : rvmSupplierService
+"RvmMachineDto" --> "RvmMachine" : use
+"RvmMachineRepository" --> "RvmMachine" : use
+"RvmMachineServiceImpl" --> "*" "RvmMachine" : use
+"RvmMachineServiceImpl" --> "RvmMachineRepository" : rvmMachineRepository
+"RvmMachineServiceImpl" --> "RvmSupplier" : use as rvmSupplier
+"RvmMachineServiceImpl" --> "RvmSupplierRepository" : rvmSupplierRepository
+"RvmMachineService" --> "*" "RvmMachine" : use
+"RvmMachineService" <|-- "RvmMachineServiceImpl"
+"RvmMachineService" --> "RvmSupplier" : use as rvmSupplier
+"RvmSupplierDto" --> "*" "RefundArticleDto" : refundArticles
+"RvmSupplierDto" --> "*" "RvmMachineDto" : rvmMachines
+"RvmSupplierDto" --> "RvmSupplier" : use
+"RvmSupplierDto" --> "*" "TransactionDto" : transactions
+"RvmSupplierFtpConnection" --> "RvmSupplierYml" : rvmSupplierYml
+"RvmSupplierFtpConnector" --> "DirectoryService" : directoryService
+"RvmSupplierFtpConnector" --> "RvmSupplierFtpConnection" : use as toExecute
+"RvmSupplierFtpConnector" --> "RvmSupplierYml" : use as rvmSupplierYml
+"RvmSupplier" --> "*" "RefundArticle" : refundArticles
+"RvmSupplierRepository" --> "RvmSupplier" : use
+"RvmSupplierRepository" --> "Transaction" : use as transaction
+"RvmSupplier" --> "*" "RvmMachine" : rvmMachines
+"RvmSupplierServiceImpl" --> "RefundArticleRepository" : refundArticleRepository
+"RvmSupplierServiceImpl" --> "RvmMachineRepository" : rvmMachineRepository
+"RvmSupplierServiceImpl" --> "*" "RvmSupplier" : use
+"RvmSupplierServiceImpl" --> "RvmSupplierRepository" : rvmSupplierRepository
+"RvmSupplierServiceImpl" --> "TransactionRepository" : transactionRepository
+"RvmSupplierService" --> "*" "RvmSupplier" : use
+"RvmSupplierService" <|-- "RvmSupplierServiceImpl"
+"RvmSupplier" --> "*" "Transaction" : transactions
+"RvmSuppliersConfiguration" --> "*" "RvmSupplierYml" : rvmSupplierYmlList
+"RvmTransactionService" --> "Company" : use as company
+"RvmTransactionServiceImpl" --> "Company" : use as company
+"RvmTransactionServiceImpl" --> "CompanyService" : companyService
+"RvmTransactionServiceImpl" --> "DirectoryService" : directoryService
+"RvmTransactionServiceImpl" --> "ExistingBagService" : existingBagService
+"RvmTransactionServiceImpl" --> "ExistingTransactionService" : existingTransactionService
+"RvmTransactionServiceImpl" --> "ImporterRuleService" : importerRuleService
+"RvmTransactionServiceImpl" --> "LabelOrderService" : labelOrderService
+"RvmTransactionServiceImpl" --> "LogExporterService" : loggerExporterService
+"RvmTransactionServiceImpl" --> "LogFileInfo" : loggerExporterService
+"RvmTransactionServiceImpl" --> "RejectedTransactionService" : rejectedTransactionService
+"RvmTransactionServiceImpl" --> "SrnArticleService" : srnArticleService
+"RvmTransactionServiceImpl" --> "TransactionRepository" : transactionRepository
+"RvmTransactionServiceImpl" --> "TransactionService" : transactionService
+"RvmTransactionService" <|-- "RvmTransactionServiceImpl"
+"SlsNlsBodyBuilder" --> "SlsNlsBody" : use
+"SrnAllExistingBagsImporter" --> "DirectoryService" : directoryService
+"SrnAllExistingTransactionsImporter" --> "DirectoryService" : directoryService
+"SrnArticleDto" --> "SrnArticle" : use
+"SrnArticleDto" <|-- "SrnArticleDtoVersion016"
+"SrnArticleDtoVersion016" --> "SrnArticle" : use
+"SrnArticleDtoVersion016" <|-- "SrnArticleDtoVersion017"
+"SrnArticleDtoVersion017" --> "SrnArticle" : use
+"SrnArticleFileImporter" --> "DirectoryService" : directoryService
+"SrnArticleFileImporter" --> "LogExporterService" : loggerExporterService
+"SrnArticleFileImporter" --> "LogFileInfo" : loggerExporterService
+"SrnArticleFileImporter" --> "SrnArticleService" : srnArticleService
+"SrnArticleFileImporter" --> "SrnRemovedArticleService" : srnRemovedArticleService
+"SrnArticlePerCompanyFileExporter" --> "CompanyService" : companyService
+"SrnArticlePerCompanyFileExporter" --> "DirectoryService" : directoryService
+"SrnArticlePerCompanyFileExporter" --> "SrnArticleService" : articleService
+"SrnArticleRepository" --> "*" "SrnArticle" : use
+"SrnArticleServiceImpl" --> "OcmResponse" : use
+"SrnArticleServiceImpl" --> "*" "SrnArticle" : use as srnArticles
+"SrnArticleServiceImpl" --> "SrnArticleDto" : use
+"SrnArticleServiceImpl" --> "SrnArticleDtoVersion016" : use
+"SrnArticleServiceImpl" --> "SrnArticleDtoVersion017" : use
+"SrnArticleServiceImpl" --> "SrnArticleRepository" : srnArticleRepository
+"SrnArticleServiceImpl" --> "SrnArticles" : use
+"SrnArticleService" --> "OcmResponse" : use
+"SrnArticleService" --> "*" "SrnArticle" : use as srnArticles
+"SrnArticleService" --> "SrnArticleDto" : use
+"SrnArticleService" --> "SrnArticleDtoVersion016" : use
+"SrnArticleService" --> "SrnArticleDtoVersion017" : use
+"SrnArticleService" <|-- "SrnArticleServiceImpl"
+"SrnArticleService" --> "SrnArticles" : use
+"SrnArticlesPricatPerCompanyFileExporter" --> "CompanyService" : companyService
+"SrnArticlesPricatPerCompanyFileExporter" --> "DirectoryService" : directoryService
+"SrnArticlesPricatPerCompanyFileExporter" --> "LogExporterService" : loggerExporterService
+"SrnArticlesPricatPerCompanyFileExporter" --> "LogFileInfo" : loggerExporterService
+"SrnCharitiesFileExporter" --> "CompanyService" : companyService
+"SrnCharitiesFileExporter" --> "DirectoryService" : directoryService
+"SrnCompanyImporter" --> "CompanyService" : companyService
+"SrnCompanyImporter" --> "DirectoryService" : directoryService
+"SrnCompanyImporter" --> "LogExporterService" : loggerExporterService
+"SrnCompanyImporter" --> "LogFileInfo" : loggerExporterService
+"SrnExistingBagsImporter" --> "DirectoryService" : directoryService
+"SrnExistingTransactionsImporter" --> "DirectoryService" : directoryService
+"SrnImporterRuleImporter" --> "DirectoryService" : directoryService
+"SrnImporterRuleImporter" --> "ImporterRuleService" : importerRuleService
+"SrnLabelOrdersImporter" --> "DirectoryService" : directoryService
+"SrnLabelOrdersImporter" --> "LabelOrderService" : labelOrderService
+"SrnOAuthClientImporter" --> "DirectoryService" : directoryService
+"SrnOAuthClientImporter" --> "LogExporterService" : loggerExporterService
+"SrnOAuthClientImporter" --> "LogFileInfo" : loggerExporterService
+"SrnOAuthClientImporter" --> "OAuthClientService" : oauthClientService
+"SrnRejectedTransactionExporterTask" --> "CompanyService" : companyService
+"SrnRejectedTransactionExporterTask" --> "DirectoryService" : directoryService
+"SrnRejectedTransactionExporterTask" --> "RejectedTransactionService" : rejectedTransactionService
+"SrnRejectedTransactionImporterTask" --> "DirectoryService" : directoryService
+"SrnRejectedTransactionImporterTask" --> "RejectedTransactionService" : rejectedTransactionService
+"SrnRemovedArticleBuilder" --> "SrnRemovedArticle" : use
+"SrnRemovedArticleRepository" --> "SrnRemovedArticle" : use
+"SrnRemovedArticleServiceImpl" --> "OcmResponse" : use
+"SrnRemovedArticleServiceImpl" --> "SrnArticles" : use
+"SrnRemovedArticleServiceImpl" --> "*" "SrnRemovedArticle" : use as deletingArticles
+"SrnRemovedArticleServiceImpl" --> "SrnRemovedArticleDto" : use
+"SrnRemovedArticleServiceImpl" --> "SrnRemovedArticleRepository" : srnRemovedArticleRepository
+"SrnRemovedArticleService" --> "OcmResponse" : use
+"SrnRemovedArticleService" --> "SrnArticles" : use
+"SrnRemovedArticleService" --> "*" "SrnRemovedArticle" : use as deletingArticles
+"SrnRemovedArticleService" --> "SrnRemovedArticleDto" : use
+"SrnRemovedArticleService" <|-- "SrnRemovedArticleServiceImpl"
+"SynchronizeRejectedBagsTask" --> "CompanyService" : companyService
+"SynchronizeRejectedBagsTask" --> "DirectoryService" : directoryService
+"SynchronizeRejectedBagsTask" --> "ExistingBagService" : existingBagService
+"SynchronizeRejectedTransactionsTask" --> "DirectoryService" : directoryService
+"SynchronizedDirectoryRepository" --> "SynchronizedDirectory" : use
+"SynchronizedDirectoryServiceImpl" --> "SynchronizedDirectory" : use
+"SynchronizedDirectoryServiceImpl" --> "SynchronizedDirectoryRepository" : synchronizedDirectoryRepository
+"SynchronizedDirectoryService" --> "SynchronizedDirectory" : use
+"SynchronizedDirectoryService" <|-- "SynchronizedDirectoryServiceImpl"
+"TaskController" --> "TaskService" : taskService
+"TaskService" <|-- "TaskServiceImpl"
+"TransactionArticleDto" --> "TransactionArticle" : use
+"TransactionArticleRepository" --> "*" "TransactionArticle" : use
+"TransactionBodyBuilder" --> "TransactionBody" : use
+"TransactionBuilder" --> "Transaction" : use
+"TransactionController" --> "OcmTransactionResponse" : use
+"TransactionController" --> "*" "Transaction" : use
+"TransactionController" --> "*" "TransactionArticle" : use
+"TransactionController" --> "TransactionDto" : use as transactionDto
+"TransactionController" --> "TransactionService" : transactionService
+"TransactionDto" --> "Transaction" : use
+"TransactionDto" --> "*" "TransactionArticleDto" : articles
+"TransactionFailedDirectoryImporter" --> "AAFilesService" : aaFilesService
+"TransactionFailedDirectoryImporter" --> "CompanyService" : companyService
+"TransactionFailedDirectoryImporter" --> "DirectoryService" : directoryService
+"TransactionFailedDirectoryImporter" --> "RvmTransactionService" : rvmTransactionService
+"TransactionFailedDirectoryImporter" --> "TransactionService" : transactionService
+"TransactionFailedReimporter" --> "AAFilesService" : aaFilesService
+"TransactionFailedReimporter" --> "CompanyService" : companyService
+"TransactionFailedReimporter" --> "DirectoryService" : directoryService
+"TransactionFailedReimporter" --> "RvmTransactionService" : rvmTransactionService
+"TransactionFailedReimporter" --> "TransactionService" : transactionService
+"TransactionHeaderBuilder" --> "FileHeader" : use
+"TransactionHeaderBuilder" --> "TransactionHeader" : use
+"TransactionImportService" --> "AAFilesService" : aaFilesService
+"TransactionImportService" --> "CompanyService" : companyService
+"TransactionImportService" --> "DirectoryService" : directoryService
+"TransactionImportService" --> "RvmTransactionService" : rvmTransactionService
+"TransactionImportService" --> "TransactionFilePayload" : use as payload
+"TransactionPerCompanyFileImporter" --> "CompanyService" : companyService
+"TransactionPerCompanyFileImporter" --> "DirectoryService" : directoryService
+"TransactionPerCompanyFileImporter" --> "PublisherTransactionImport" : publisherTransactionImport
+"TransactionPerCompanyFileImporter" --> "PublisherTransactionImportBigFiles" : publisherTransactionImportBigFiles
+"TransactionRepository" --> "*" "Transaction" : use
+"TransactionService" --> "Company" : use as company
+"TransactionServiceImpl" --> "Company" : use as company
+"TransactionServiceImpl" --> "CompanyService" : companyService
+"TransactionServiceImpl" --> "DirectoryService" : directoryService
+"TransactionServiceImpl" --> "EnvironmentService" : environmentService
+"TransactionServiceImpl" --> "ExistingBagLatestRepository" : existingBagLatestRepository
+"TransactionServiceImpl" --> "ExistingBagService" : existingBagService
+"TransactionServiceImpl" --> "ExistingTransactionLatestRepository" : existingTransactionLatestRepository
+"TransactionServiceImpl" --> "ExistingTransactionService" : existingTransactionService
+"TransactionServiceImpl" --> "ImporterRuleRepository" : importerRuleRepository
+"TransactionServiceImpl" --> "ImporterRuleService" : importerRuleService
+"TransactionServiceImpl" --> "LabelOrderRepository" : labelOrderRepository
+"TransactionServiceImpl" --> "LabelOrderService" : labelOrderService
+"TransactionServiceImpl" --> "LogExporterService" : loggerExporterService
+"TransactionServiceImpl" --> "LogFileInfo" : loggerExporterService
+"TransactionServiceImpl" --> "OcmTransactionResponse" : use
+"TransactionServiceImpl" --> "PublisherTransactionImportRest" : publisherTransactionImportRest
+"TransactionServiceImpl" --> "SrnArticleService" : srnArticleService
+"TransactionServiceImpl" --> "Transaction" : use as transaction
+"TransactionServiceImpl" --> "*" "TransactionArticle" : use
+"TransactionServiceImpl" --> "TransactionArticleRepository" : transactionArticleRepository
+"TransactionServiceImpl" --> "TransactionDto" : use as transactionDto
+"TransactionServiceImpl" --> "TransactionRepository" : transactionRepository
+"TransactionService" --> "OcmTransactionResponse" : use
+"TransactionService" --> "Transaction" : use as transaction
+"TransactionService" --> "*" "TransactionArticle" : use
+"TransactionService" --> "TransactionDto" : use as transactionDto
+"TransactionService" <|-- "TransactionServiceImpl"
+"TransactionToFileExporter" --> "CompanyService" : companyService
+"TransactionToFileExporter" --> "DirectoryService" : directoryService
+"TransactionToFileExporter" --> "PublisherTransactionExport" : publisherTransactionExport
+"TransactionToFileExporter" --> "TransactionService" : transactionService
+"TransactionsCleanupTask" --> "ExportedTransactionService" : exportedTransactionService
+"TransactionsConsistencyCheck" --> "DirectoryService" : directoryService
+"TransactionsConsistencyCheck" --> "TransactionRepository" : transactionRepository
+
+@enduml
